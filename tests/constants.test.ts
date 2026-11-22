@@ -16,8 +16,8 @@ import {
 
 /** E6 首屏硬性预算：这些常量是"一目了然"的数字化契约，改动必须是有意的。 */
 describe('E6 首屏预算常量', () => {
-  it('NAV ≤ 5 项且每项有 label/href', () => {
-    expect(NAV.length).toBeLessThanOrEqual(5);
+  it('NAV ≤ 6 项且每项有 label/href（企业门户含「能力」项）', () => {
+    expect(NAV.length).toBeLessThanOrEqual(6);
     for (const item of NAV) {
       expect(typeof item.label).toBe('string');
       expect(item.href.startsWith('/')).toBe(true);

@@ -31,7 +31,7 @@ test.describe('首屏（L1 / 3 秒层）', () => {
     await expect(hero.getByRole('link', { name: '商务咨询' })).toBeVisible();
 
     const nav = page.getByRole('navigation', { name: '主导航' });
-    expect(await nav.getByRole('link').count()).toBeLessThanOrEqual(5);
+    expect(await nav.getByRole('link').count()).toBeLessThanOrEqual(6);
   });
 
   test('首页零可执行脚本（E7）', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('导航与 CTA 可达', () => {
     const links = await nav.getByRole('link').evaluateAll(
       (as) => as.map((a) => ({ href: (a as HTMLAnchorElement).getAttribute('href')! })),
     );
-    expect(links.length).toBeLessThanOrEqual(5);
+    expect(links.length).toBeLessThanOrEqual(6);
     for (const { href } of links) {
       const r = await page.goto(href);
       expect(r?.status(), `${href} 应可访问`).toBe(200);

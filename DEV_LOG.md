@@ -110,3 +110,22 @@
 **质量门禁（全绿）**：build 69 页、astro check 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false/_headers 618B、部署冒烟 16 核心页 200、E2E 7/7（跑前确认无残留 serve 占端口）、verify-ci 27 项、Lighthouse 100/100/100/100、axe 5 页 0 违规。产品页已截图经 vision_present 呈现用户。
 
 **状态**：本轮补图已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效）。
+
+---
+
+## 2026-11-22 · 为 4 款新产品补创作日志 + 主导航单列「能力」
+
+**背景**：用户在本地预览后反馈三点（m01507）：①后加的 4 个产品都没有「日志记录」，能否补充；②「能力」提取了吗、现在共几条；③「能力」只在首页看到，希望像 webSite 那样在右上角菜单栏单列一项。核查：原 24 篇 log 全关联老产品（atelier 12 / mylock 8 / huanming 4），4 个新产品确实零日志；能力已有 14 条（原 9 + 新增 5）；NAV 原只有 5 项、无「能力」。
+
+**补 12 篇创作日志**（`src/content/log/`，全部基于源项目真实文档改写、不虚构；4 个源目录全程只读）：
+- PhoneFiles 3 篇：`2026-11-21-phonefiles-三项路线拍板.md`（decision）、`2026-11-21-phonefiles-默认存储被TF卡遮蔽.md`（build-log）、`2026-11-21-phonefiles-贡献观测不贡献路径.md`（decision）。
+- LocRecord 3 篇：`2026-11-21-locrecord-license一票否决.md`（decision，pyannote Gated 剔除 / sherpa-onnx Apache-2.0）、`2026-11-22-locrecord-sherpa静态链接踩坑.md`（build-log，MSVC/MT 静态 No-Go→shared DLL map 格式修复）、`2026-11-22-locrecord-三次实测推翻结论.md`（retro，SenseVoice 20.94% / faster-whisper 8.13% / 应用内 sherpa-whisper 69.64% 幻觉）。
+- 代谢小算 3 篇：`2026-11-10-health-押注v05全量原生移植.md`（decision，v0.5 唯一基线全量移植不裁剪）、`2026-11-11-health-81项断言守住纯计算内核.md`（build-log）、`2026-11-14-health-提审踩坑剪贴板要声明.md`（retro，wx.setClipboardData/shareFileMessage 须声明「采集用户隐私」）。
+- 照水 ZenMind 3 篇：`2026-11-14-zenmind-不锁模型只认契约.md`（decision，14 模型 JSON 契约 / 数据出境只用境内）、`2026-11-14-zenmind-把等待藏进仪式.md`（build-log，感知延迟 9.2s→3.1s）、`2026-11-15-zenmind-从疗愈到自修一条合规红线.md`（decision，不产结论/safety 拦截/30天不自动扣款）。
+- 每篇 `product_id` 关联到对应产品，`kind` 逐篇核对正确（构建期 E4-c 十篇证据链接全部指向真实条目）。产品详情页 `getLogsForProduct` 现每页显示 3 条创作记录（dist HTML 已核验各 3 个 /log/ 链接）。
+
+**主导航单列「能力」**：`constants.ts` NAV 5 项→6 项，插入「能力 /capabilities」（产品/解决方案/场景案例/能力/关于/联系）；导航预算由 ≤5 放宽到 ≤6（信息架构比个人站复杂）。同步：`Nav.astro` 注释、首页 `index.astro` 注释、`README.md:118`、`docs/命令手册.md`；门禁断言 `tests/constants.test.ts`（≤6）、`tests/e2e/site.spec.ts` 两处（≤6）。历史档案（项目总结报告/规划书/product-analysis/首屏预算日志）里的旧站「导航≤5」属历史口径，不改。
+
+**质量门禁（全绿）**：build 81 页（69+12 日志，pagefind 索引 81）、astro check 76 文件 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false/_headers 618B、部署冒烟 16 核心页 200、E2E 7/7（PW_PORT=4399 干净端口，避开用户占用的 4321）、axe 5 页 0 违规、Lighthouse 100/100/100/100、verify-ci 27 项 scanned=196。
+
+**状态**：本轮日志与导航改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

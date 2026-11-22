@@ -1,8 +1,8 @@
 ---
 /**
- * 主导航（≤5 项，E6）+ 站点品牌。全站共用，currentPath 用来标 aria-current。
+ * 主导航（企业门户 ≤6 项）+ 站点品牌。全站共用，currentPath 用来标 aria-current。
  *
- * 品牌链接刻意放在 <nav aria-label="主导航"> 之外：e2e 断言该导航内链接 ≤5，
+ * 品牌链接刻意放在 <nav aria-label="主导航"> 之外：e2e 断言该导航内链接 ≤6，
  * 品牌若放进 nav 会占掉一个名额。当前页用 aria-current="page" 标注（a11y），
  * 强调色下划线由 .nav-link[aria-current] 在 global.css 里提供（纯 CSS）。
  */

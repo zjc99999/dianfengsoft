@@ -3,7 +3,8 @@
  * 单一来源，便于逐项核对首屏预算（E6）与 SEO。
  *
  * 企业门户版（巅峰软件）：品牌主体由「独立开发者 Atelier」改为企业实体，
- * 导航与 CTA 相应企业化；预算约束（导航≤5、主/次/软 CTA 各 1）保持不变。
+ * 导航与 CTA 相应企业化。信息架构比个人站复杂，「能力」从首页/页脚提升为
+ * 主导航项，导航预算由 ≤5 放宽到 ≤6；主/次/软 CTA 各 1 保持不变。
  */
 import type { CollectionKey } from 'astro:content';
 
@@ -14,12 +15,13 @@ export const SITE = {
   locale: 'zh-CN',
 } as const;
 
-/** 导航：≤5 项（E6）。企业门户取「产品 / 解决方案 / 场景案例 / 关于 / 联系」， */
-/** 首页通过品牌 logo 返回；能力 / 社会责任 / 洞察与实践通过首页与页脚进入。 */
+/** 导航：≤6 项（企业门户放宽）。取「产品 / 解决方案 / 场景案例 / 能力 / 关于 / 联系」。 */
+/** 首页通过品牌 logo 返回；社会责任 / 洞察与实践 / 创作日志通过首页与页脚进入。 */
 export const NAV: ReadonlyArray<{ label: string; href: string }> = [
   { label: '产品', href: '/products' },
   { label: '解决方案', href: '/solutions' },
   { label: '场景案例', href: '/cases' },
+  { label: '能力', href: '/capabilities' },
   { label: '关于', href: '/about' },
   { label: '联系', href: '/contact' },
 ];

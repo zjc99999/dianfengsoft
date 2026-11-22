@@ -32,8 +32,8 @@ const { availability, headline, value } = Astro.props;
     <p class="hero-value">{value}</p>
 
     <div class="hero-actions">
-      <a href={CTA.primary.href} class="btn btn-primary" target="_blank" rel="noopener noreferrer">{CTA.primary.label}</a>
-      <a href={CTA.secondary.href} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">{CTA.secondary.label}</a>
+      <a href={CTA.primary.href} class="btn btn-primary">{CTA.primary.label}</a>
+      <a href={CTA.secondary.href} class="btn btn-ghost">{CTA.secondary.label}</a>
     </div>
   </div>
 </section>

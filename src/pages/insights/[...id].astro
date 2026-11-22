@@ -30,7 +30,7 @@ const KIND_LABEL: Record<string, string> = {
   seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/insights" class="back-link" target="_blank" rel="noopener noreferrer">← 返回洞察与实践</a>
+    <a href="/insights" class="back-link">← 返回洞察与实践</a>
     <p class="eyebrow">{KIND_LABEL[d.kind] ?? d.kind}</p>
     <h1 class="page-title">{d.title}</h1>
     <p class="page-lead">{d.summary}</p>

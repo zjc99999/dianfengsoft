@@ -80,7 +80,7 @@ const mailto = email ? `mailto:${email}?subject=${encodeURIComponent(mailSubject
       <div class="fallback-note">
         <p>在线表单尚未启用，可以直接发邮件联系我们。网站其余部分不受影响。</p>
         {mailto && (
-          <a href={mailto} data-lead-fallback={mode} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">写邮件联系我们 ↗</a>
+          <a href={mailto} data-lead-fallback={mode} class="btn btn-ghost">写邮件联系我们 ↗</a>
         )}
         {!mailto && (
           <p class="lead-note">也可在「关于」页查看其他联系方式。</p>
@@ -94,7 +94,7 @@ const mailto = email ? `mailto:${email}?subject=${encodeURIComponent(mailSubject
     endpoint && mailto && (
       <p class="fallback-note">
         表单打不开？也可以
-        <a href={mailto} data-lead-fallback={mode} target="_blank" rel="noopener noreferrer">直接发邮件联系我们</a>。
+        <a href={mailto} data-lead-fallback={mode}>直接发邮件联系我们</a>。
       </p>
     )
   }
@@ -102,7 +102,7 @@ const mailto = email ? `mailto:${email}?subject=${encodeURIComponent(mailSubject
   {
     isSubscribe && (
       <p class="fine-print">
-        每封邮件都带退订链接；你的邮箱不会被出售或用于广告。详见<a href="/privacy" target="_blank" rel="noopener noreferrer">隐私政策</a>。
+        每封邮件都带退订链接；你的邮箱不会被出售或用于广告。详见<a href="/privacy">隐私政策</a>。
       </p>
     )
   }

@@ -26,10 +26,14 @@ interface Props {
    * /log 列表页直接挂在 <h1> 下 → h2，避免跳级。
    */
   headingLevel?: 'h2' | 'h3';
+  /** 是否在新标签打开（仅产品详情页的创作记录为 true；首页/日志页保持本页） */
+  newTab?: boolean;
 }
 
-const { items, showAll = false, headingLevel = 'h3' } = Astro.props;
+const { items, showAll = false, headingLevel = 'h3', newTab = false } = Astro.props;
 const Heading = headingLevel;
+const target = newTab ? '_blank' : undefined;
+const rel = newTab ? 'noopener noreferrer' : undefined;
 ---
 
 <ol class="timeline">
@@ -47,7 +51,7 @@ const Heading = headingLevel;
           )}
         </div>
         <Heading class="tl-title">
-          <a href={`/log/${item.id}`} target="_blank" rel="noopener noreferrer">{item.title}</a>
+          <a href={`/log/${item.id}`} target={target} rel={rel}>{item.title}</a>
         </Heading>
         <p class="tl-summary">{item.summary}</p>
       </li>
@@ -58,7 +62,7 @@ const Heading = headingLevel;
 {
   !showAll && items.length > 0 && (
     <p class="timeline-more">
-      <a href="/log" target="_blank" rel="noopener noreferrer">查看全部创作日志 →</a>
+      <a href="/log">查看全部创作日志 →</a>
     </p>
   )
 }

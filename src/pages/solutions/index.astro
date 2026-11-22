@@ -20,7 +20,7 @@ const productMap = new Map(products.map((p) => [p.id, p.data.title]));
       {solutions.map((s) => (
         <article class="card">
           <p class="eyebrow">适用场景</p>
-          <h2 class="card-title"><a href={`/solutions/${s.id}`} target="_blank" rel="noopener noreferrer">{s.data.title}</a></h2>
+          <h2 class="card-title"><a href={`/solutions/${s.id}`}>{s.data.title}</a></h2>
           <p class="card-summary">{s.data.summary}</p>
           {
             s.data.related_product_ids.length > 0 && (

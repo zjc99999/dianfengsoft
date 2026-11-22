@@ -27,7 +27,7 @@ const relatedProducts = allProducts.filter((p) => d.related_product_ids.includes
   seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/solutions" class="back-link" target="_blank" rel="noopener noreferrer">← 返回解决方案</a>
+    <a href="/solutions" class="back-link">← 返回解决方案</a>
     <h1 class="page-title">{d.title}</h1>
     <p class="page-lead">{d.summary}</p>
     <p class="detail-meta">{formatDate(d.published_at)} 发布</p>
@@ -59,7 +59,7 @@ const relatedProducts = allProducts.filter((p) => d.related_product_ids.includes
             {relatedProducts.map((p) => (
               <li class="evidence-card">
                 <span class="evidence-kind">产品</span>
-                <a href={`/products/${p.id}`} class="evidence-card-title" target="_blank" rel="noopener noreferrer">{p.data.title} →</a>
+                <a href={`/products/${p.id}`} class="evidence-card-title">{p.data.title} →</a>
                 <p class="card-summary">{p.data.tagline}</p>
               </li>
             ))}

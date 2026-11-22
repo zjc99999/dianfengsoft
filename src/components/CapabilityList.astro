@@ -33,11 +33,11 @@ const { items } = Astro.props;
         <ul class="evidence-links">
           {cap.evidence.map((e) => (
             <li>
-              <a href={e.href} class="evidence-chip" target="_blank" rel="noopener noreferrer">证据：{e.label} →</a>
+              <a href={e.href} class="evidence-chip">证据：{e.label} →</a>
             </li>
           ))}
         </ul>
-        <a href={`/capabilities/${cap.id}/`} class="cap-detail-link" target="_blank" rel="noopener noreferrer">展开证据页 →</a>
+        <a href={`/capabilities/${cap.id}/`} class="cap-detail-link">展开证据页 →</a>
       </li>
     ))
   }

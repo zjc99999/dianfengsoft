@@ -197,3 +197,25 @@
 **质量门禁（全绿）**：build 81 页、astro check 78 文件 0 error/0 warning/0 hint、单测 47/47、硬规则 E4-a/b/c、CSP drift=false（_headers 618B、哈希未变）、部署冒烟 16 页 200（exec=1 /theme.js）、E2E 8/8（首轮 1 例 Chrome 启动超时 180s，单独重跑 660ms 通过，属基础设施偶发）、axe 5 页 0 违规、Lighthouse 100×4（LCP 0.3s/CLS 0/TBT 0）、verify-ci 27 项 scanned=209。截图脚本实测：首页深浅两主题 body 均应用极光渐变，首页 43/49、产品页 36/36 站内链接为 `_blank`。
 
 **状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 纠正链接新标签范围：仅产品列表/详情页
+
+**背景**：用户澄清上一条意图——「产品列表及相关产品详情页面中的链接在新标签打开，其它的还是在本页面打开」。上一轮做成了全站新标签，范围过宽，本轮收窄。
+
+**回退**：`git checkout c8cf711 -- src/components src/pages tests/e2e/site.spec.ts`，撤掉上一轮全部 astro 的 `target="_blank"`（仅保留页脚备案号原本的新标签），保留 `global.css` 背景美化与主题切换（本轮未触碰）。
+
+**精准改动**：
+1. `ProductCard.astro`：新增 `newTab?:boolean` 开关（默认 false），卡片内 3 类链接（封面/标题/看详情 + 外链）按开关决定 target/rel；首页精选不传→保持本页。
+2. `products/index.astro`：给 `<ProductCard newTab />` 传开关 → 产品列表页全部卡片链接新标签。
+3. `products/[...id].astro`：返回产品、访问站点、源码链接加 `target="_blank" rel="noopener noreferrer"`；`<LogTimeline newTab />` → 创作记录链接也新标签。
+4. `LogTimeline.astro`：新增 `newTab?:boolean` 开关（默认 false），仅产品详情页传 true；首页/日志列表页保持本页。
+5. 产品详情 MDX 正文两处外链改手写 `<a target="_blank">`（huanming 官网、mylock 源码）。
+6. E2E：重写「作品详情可从列表抵达」为「产品列表/详情页链接新标签打开」（用 context.waitForEvent('page') 接 popup，并断言 target 全 `_blank`）+ 新增「非产品页面链接保持本页」（导航/精选/日志列表 target 为空，点击留本页）。
+
+**产物核验**：产品列表页 21/21、产品详情页站内 6/6 + 外链 3/3 全 `_blank`；首页精选 11/11、导航 6/6、CTA 7/7 全本页。
+
+**质量门禁（全绿）**：build 81 页、astro check 77 文件 0 error、单测 47/47、硬规则 E4-a/b/c、CSP drift=false（_headers 618B、哈希未变）、部署冒烟 16 页 200、verify-ci 27 项 scanned=209、verify-lead PASS、verify-no-dynamic 7 第三方被拦、axe 5 页 0 违规、Lighthouse 100×4（LCP 0.3s/CLS 0/TBT 0）、perf LCP 976ms/首屏 JS 1.26KB/scriptCount=1/inline=0。E2E 9 条全通过（首轮 1 条 Chrome 启动 180s 超时，单独重跑 413ms 通过，基础设施偶发）。
+
+**状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

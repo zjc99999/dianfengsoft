@@ -49,8 +49,8 @@ const d = product.data;
     }
     <p class="detail-meta">
       {d.launch_date && <>{formatDate(d.launch_date)} 上线 · </>}
-      {d.url && <><a href={d.url} rel="noopener noreferrer" target="_blank">访问站点 ↗</a> · </>}
-      {d.repo_url && <a href={d.repo_url} rel="noopener noreferrer" target="_blank">源码 ↗</a>}
+      {d.url && <><a href={d.url} target="_blank" rel="noopener noreferrer">访问站点 ↗</a> · </>}
+      {d.repo_url && <a href={d.repo_url} target="_blank" rel="noopener noreferrer">源码 ↗</a>}
     </p>
 
     <div class="prose prose-block">
@@ -62,6 +62,7 @@ const d = product.data;
       <div class="block-gap">
         <LogTimeline
           showAll
+          newTab
           items={logs.map((l) => ({
             id: l.id,
             title: l.data.title,

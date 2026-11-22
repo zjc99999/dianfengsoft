@@ -26,7 +26,7 @@ const d = entry.data;
   seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/log" class="back-link" target="_blank" rel="noopener noreferrer">← 返回日志</a>
+    <a href="/log" class="back-link">← 返回日志</a>
     <div class="tl-meta">
       <time datetime={d.published_at.toISOString()}>{formatDate(d.published_at)}</time>
       <span class="tl-kind">{KIND_LABEL[d.kind] ?? d.kind}</span>
@@ -45,7 +45,7 @@ const d = entry.data;
           <ul class="related-list">
             {related.map((r) => (
               <li>
-                <a href={`/log/${r.id}`} target="_blank" rel="noopener noreferrer">{r.data.title}</a>
+                <a href={`/log/${r.id}`}>{r.data.title}</a>
                 <span class="subtle"> · {formatDate(r.data.published_at)}</span>
               </li>
             ))}
@@ -55,7 +55,7 @@ const d = entry.data;
     }
 
     <p class="timeline-more">
-      <a href="/log" target="_blank" rel="noopener noreferrer">查看全部创作日志 →</a>
+      <a href="/log">查看全部创作日志 →</a>
     </p>
   </article>
 </BaseLayout>

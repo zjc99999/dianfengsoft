@@ -30,21 +30,25 @@ interface Props {
    * /products 列表页卡片直接挂在 <h1> 下 → 必须是 h2，否则 a11y 报跳级。
    */
   headingLevel?: 'h2' | 'h3';
+  /** 是否在新标签打开（仅 /products 列表页为 true；首页精选保持本页） */
+  newTab?: boolean;
 }
 
 const {
   id, title, tagline, stage, url, repoUrl, launchDate,
-  metrics = {}, cover, headingLevel = 'h3',
+  metrics = {}, cover, headingLevel = 'h3', newTab = false,
 } = Astro.props;
 const stageLabel = STAGE_LABEL[stage] ?? stage;
 const metricEntries = Object.entries(metrics).slice(0, 3);
 const Heading = headingLevel;
+const target = newTab ? '_blank' : undefined;
+const rel = newTab ? 'noopener noreferrer' : undefined;
 ---
 
 <article class="card">
   {
     cover && (
-      <a href={`/products/${id}`} class="card-cover" aria-label={`${title} 详情`} target="_blank" rel="noopener noreferrer">
+      <a href={`/products/${id}`} class="card-cover" aria-label={`${title} 详情`} target={target} rel={rel}>
         <Image
           src={cover}
           alt={`${title} 的封面图`}
@@ -59,7 +63,7 @@ const Heading = headingLevel;
   <div class="card-body">
     <div class="card-head">
       <Heading class="card-title">
-        <a href={`/products/${id}`} target="_blank" rel="noopener noreferrer">{title}</a>
+        <a href={`/products/${id}`} target={target} rel={rel}>{title}</a>
       </Heading>
       <span class="stage-pill">{stageLabel}</span>
     </div>
@@ -77,9 +81,9 @@ const Heading = headingLevel;
     }
 
     <div class="card-links">
-      <a href={`/products/${id}`} target="_blank" rel="noopener noreferrer">看详情与创作记录</a>
-      {url && <a href={url} rel="noopener noreferrer" target="_blank">访问站点 ↗</a>}
-      {repoUrl && <a href={repoUrl} rel="noopener noreferrer" target="_blank">源码 ↗</a>}
+      <a href={`/products/${id}`} target={target} rel={rel}>看详情与创作记录</a>
+      {url && <a href={url} target={target} rel={rel ?? 'noopener noreferrer'}>访问站点 ↗</a>}
+      {repoUrl && <a href={repoUrl} target={target} rel={rel ?? 'noopener noreferrer'}>源码 ↗</a>}
       {launchDate && <span class="date">{formatDate(launchDate)} 上线</span>}
     </div>
   </div>

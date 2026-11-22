@@ -62,3 +62,32 @@
 **用户确认（m01097）**：「深色款的吧」——选定深空蓝科技风为企业门户默认主题。已将 `global.css` `:root` 设为深色变量、`color-scheme: dark`，移除 `prefers-color-scheme: dark` 媒体查询（避免系统浅色偏好把默认主题切回浅色）。重跑全门禁全绿：build 60 页 / check 0 error / 单测 47/47 / CSP drift=false / E2E 7/7 / axe 0 违规 / Lighthouse 100/100/100/100。
 
 **状态**：深色主题已锁定并本地 git 提交。**仍不上传 GitHub、不部署**——用户要求「先定版本再说」（GitHub 仓库 https://github.com/zjc99999/dianfengsoft、阿里云 ECS + caddy 均为待办，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 引入 4 款新产品 + 提炼企业能力（只读梳理源项目）
+
+**背景**：用户（m01147）要求把旧 webSite 的「能力」引入企业站（名称可润色），并把 4 个自研产品整理上传、从产品提炼能力展示。4 个源目录均为用户自己开发部署的项目，**全程只读、绝不修改源目录**：`D:\Projects\dsh\phoneFiles`、`D:\Projects\dsh\potentialProjects\locRecord`、`D:\Projects\WorkBuddy\Health`、`D:\Projects\WorkBuddy\ZenMind`。由 4 个并行探查 subagent 只读梳理文档/截图/证据，先前已产出完整报告。
+
+**新增 4 款产品条目**（`src/content/products/`，均按真实文档摘取、不虚构）：
+- `phonefiles.mdx`（PhoneFiles 手机数据归档助手）：只读 MTP 安卓归档 + SHA-256 清单，开源 MVP v0.6；真机 1211 文件/945MB 验证；无现成截图，条目注明早期版本边界。
+- `locrecord.mdx`（静记 LocRecord 离线会议转写）：Tauri2+Rust 本地 ASR，stage=building（上线前准备，未开卖）；静态无 HTTP + 动态 79 次采样零连接的隐私双证据；无正式截图，条目注明发布时补齐、不虚构。
+- `health-calculator.mdx`（代谢小算 微信小程序）：stage=live，1.0.3 已全量发布，81 项断言；封面 `health-home.jpg` 取自真机截图。
+- `zenmind.mdx`（照水 ZenMind 修身交互平台）：stage=live，H5 已上线 zhaoshui.dianfengsoft.cn，商业化待激活；封面 `zenmind-zhaojian.png` 取自 out/ui 五步仪式截图。
+- stage 设置遵循诚实原则：仅 phonefiles/health/zenmind 为 live，locrecord 为 building；未把"即将上线"写成已上线。
+
+**能力引入与润色**：旧能力 9 篇保留，其中 4 篇的个人化措辞（「一个人」「独立开发者」「我这边能跑」「我以为对」「我觉得」）改为企业口径「独立」「小团队」「开发机上」「自以为对」「我们」。新增 5 篇从 4 产品提炼的企业能力：
+- `privacy-first-engineering.md`（隐私优先的工程落地）→ evidence: locrecord/health-calculator/phonefiles/huanming
+- `ai-engineering.md`（AI 应用工程化）→ evidence: zenmind/huanming + log 实测证据
+- `growth-product-design.md`（增长与商业化产品设计）→ evidence: zenmind/huanming/solutions/local-file-governance
+- `mobile-miniapp-delivery.md`（微信小程序与移动端交付）→ evidence: health-calculator/zenmind
+- `interaction-experience-design.md`（交互与体验设计）→ evidence: zenmind/phonefiles/health-calculator
+- 全部 evidence_ids 均指向真实存在的条目，E4-c 构建期校验通过。
+
+**封面资源**：从源项目只读复制 `zenmind-zhaojian.png`、`health-home.jpg` 到 `src/assets/`（astro:assets 自动优化为 webp）；未引用的 health-qr/zenmind-zeshi 复制后删除，保持整洁。
+
+**质量门禁（全绿）**：build 69 页（新增 9 页：4 产品详情+5 能力）；astro check 0 error；单测 47/47；硬规则 E4-a/b/c 全过（含 E4-c 证明所有新证据目标存在）；CSP drift=false/_headers 618B；部署冒烟 16 核心页 200；axe 5 页 0 违规；Lighthouse 100/100/100/100；verify-ci 27 项。产品/能力页预览经 vision_present 呈现用户。
+
+**排障**：完整 E2E 两轮各 1 项失败且是不同用例、单独重跑均过——根因是残留预览服务器 `pwsh-343d840ba6654f00` 占用 4321 端口被 `reuseExistingServer` 复用（旧 dist 快照）。job_kill 后用干净端口 4399 重跑，E2E 7/7 全绿。教训：跑 E2E 前先确认无残留 serve 进程占用默认端口。
+
+**状态**：新增产品/能力已本地提交。仍不上传 GitHub、不部署（用户「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

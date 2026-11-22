@@ -91,3 +91,22 @@
 **排障**：完整 E2E 两轮各 1 项失败且是不同用例、单独重跑均过——根因是残留预览服务器 `pwsh-343d840ba6654f00` 占用 4321 端口被 `reuseExistingServer` 复用（旧 dist 快照）。job_kill 后用干净端口 4399 重跑，E2E 7/7 全绿。教训：跑 E2E 前先确认无残留 serve 进程占用默认端口。
 
 **状态**：新增产品/能力已本地提交。仍不上传 GitHub、不部署（用户「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 补齐 PhoneFiles 与 LocRecord 产品截图
+
+**背景**：用户 m01381 反馈上次引入产品时有几个没找到截图，已让制作用说明并配好截图，让我找找补充。源项目目录全程只读，不修改。
+
+**找到的素材**：
+- `D:\Projects\dsh\phoneFiles\screenshots\`：01-主界面-备份工作台 / 02-浏览目录树 / 03-连接扫描后 / 04-节点详情（均 1120×780）。
+- `D:\Projects\dsh\potentialProjects\locRecord\docs\使用说明文档\images\`：01-主界面 / 07-转写完成（1202×832）、08-转写详情逐字稿 / 09-转写详情含纪要（1600×650）。
+
+**执行**：
+- 封面（走 astro:assets 优化）：复制 `phonefiles-main.png`（主界面）、`locrecord-summary.png`（转写详情含纪要）到 `src/assets/`，两个产品条目的 frontmatter 加 `cover`。
+- 正文展示图（markdown 直接引用）：复制 6 张到 `public/images/products/`（phonefiles-main/tree/node，locrecord-main/done/transcript）。未引用的 phonefiles-scanned 删除。
+- `phonefiles.mdx` / `locrecord.mdx` 新增「界面一览」章节配图；LocRecord 删除原文「正式版截图将在发布时补齐——本条目不虚构截图」，改为「截图来自产品使用说明文档，展示当前可交付版本真实界面」。
+
+**质量门禁（全绿）**：build 69 页、astro check 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false/_headers 618B、部署冒烟 16 核心页 200、E2E 7/7（跑前确认无残留 serve 占端口）、verify-ci 27 项、Lighthouse 100/100/100/100、axe 5 页 0 违规。产品页已截图经 vision_present 呈现用户。
+
+**状态**：本轮补图已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效）。

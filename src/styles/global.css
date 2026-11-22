@@ -199,6 +199,30 @@ main {
   border-radius: 2px;
   background: var(--accent);
 }
+/* 页头全站搜索入口：与主导航同级、置于其外，胶囊描边样式 */
+.nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.nav-search svg {
+  flex: none;
+}
+.nav-search:hover {
+  color: var(--accent-ink);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  text-decoration: none;
+}
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -606,11 +630,16 @@ main {
   display: block;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
+  /* 统一封面高度：不同比例（尤其竖长的小程序截图）不撑爆卡片，列表保持规整 */
+  height: 11rem;
+  background: var(--surface-2);
 }
 .card-cover img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   transition: transform 0.35s ease;
 }
 /* 无封面时卡片也不塌陷：正文从顶部正常起排 */
@@ -1270,6 +1299,7 @@ a {
 .brand,
 .brand:hover,
 .nav-link,
+.nav-search,
 .skip-link,
 .btn,
 .card-cover,

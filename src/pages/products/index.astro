@@ -1,5 +1,5 @@
-﻿---
-/** 作品列表（L3）。状态标签 + 一句话 tagline，全部结构化，无长段落。 */
+---
+/** 产品列表（L3）。状态标签 + 一句话 tagline，全部结构化，无长段落。 */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { getProducts } from '../../lib/queries';
@@ -7,9 +7,9 @@ import { getProducts } from '../../lib/queries';
 const products = await getProducts();
 ---
 
-<BaseLayout title="作品 · 巅峰软件" description="我做过的、正在做的、以及已经归档的产品" currentPath="/products">
+<BaseLayout title="产品 · 巅峰软件" description="巅峰软件研发的产品：已上线、开发中与已归档的记录" currentPath="/products">
   <div class="wrap page">
-    <h1 class="page-title">作品</h1>
+    <h1 class="page-title">产品</h1>
     <p class="page-lead">状态如实标出：想法中 / 开发中 / 已上线 / 已归档。</p>
 
     <div class="card-grid">
@@ -29,6 +29,6 @@ const products = await getProducts();
       ))}
     </div>
 
-    {products.length === 0 && <p class="empty-note">还没有公开的作品。</p>}
+    {products.length === 0 && <p class="empty-note">还没有公开的产品。</p>}
   </div>
 </BaseLayout>

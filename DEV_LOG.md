@@ -129,3 +129,19 @@
 **质量门禁（全绿）**：build 81 页（69+12 日志，pagefind 索引 81）、astro check 76 文件 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false/_headers 618B、部署冒烟 16 核心页 200、E2E 7/7（PW_PORT=4399 干净端口，避开用户占用的 4321）、axe 5 页 0 违规、Lighthouse 100/100/100/100、verify-ci 27 项 scanned=196。
 
 **状态**：本轮日志与导航改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 文案统一「作品→产品」+ 产品封面规整 + 全站搜索入口
+
+**背景**：用户 m01712 三点反馈：①首页显示「产品」、点进去抬头显示「作品」，要求统一成「产品」；②产品列表页各卡截图比例不一（微信小程序竖图过长撑爆），要求统一约束预览图尺寸尤其高度以保规整；③增加全站搜索便于日后产品多了查找。
+
+**改动**：
+1. 文案统一「作品」→「产品」（用户可见处）：`src/pages/products/index.astro`（title「产品 · 巅峰软件」/ description / h1「产品」/ 空态「还没有公开的产品」/ 注释）、`src/pages/products/[...id].astro`（title `${d.title} · 产品 · 巅峰软件`、返回「← 返回产品」、h2「这个产品的创作记录」）、`src/pages/capabilities/[...id].astro` 证据类型标签 `products:'产品'`、`src/pages/search.astro`（description/导语/noscript/降级文案/placeholder「搜索产品、方案、日志、能力…」）。仅改用户可见字符串，注释里历史口径「作品卡」等保留。
+2. 产品封面统一高度：`src/styles/global.css` 的 `.card-cover` 固定 `height:11rem` + `background:var(--surface-2)`，`.card-cover img` 由 `height:auto` 改 `height:100%;object-fit:cover;object-position:center`——竖长图居中裁切不再撑爆，列表卡片高度一致（实测 7 张封面 boundingClientRect 均 176px）。此样式只作用于 ProductCard 的 `.card-cover`（全站唯一使用者），不影响其他 `.card`。
+3. 全站搜索入口：`/search` 页此前已存在（Pagefind 构建期静态索引，零服务端、唯一内联脚本），本轮只加入口——`src/components/Nav.astro` 在 `<nav>` 外新增 `a.nav-search`（内联 SVG 放大镜 + 「搜索」文字，aria-label=全站搜索），刻意置于主导航外不占 ≤6 预算（e2e 只数 nav 内链接）；`src/styles/global.css` 新增 `.nav-search` 胶囊描边样式 + 加入无下划线清单，hover 用青蓝描边/背景；`src/components/Footer.astro` 法务行加「搜索」链接。
+4. CSP：搜索页内联脚本 placeholder 文案变更 → 哈希从 `sha256-3IdZxm0ziVkC2oS2WWhP4dJuty9V9HnZn4ivHFJ7IZA=` 变为 `sha256-faJDQcZVQ2wV+37EVOhEr3uKnwtYiNO6rcHuV7tTLDU=`，已重跑 `test:csp` 两遍（首遍 DRIFT 重生成、次遍 PASS）更新 `public/_headers`。
+
+**质量门禁（全绿）**：build 81 页、astro check 76 文件 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false（新哈希已登记）、部署冒烟 16 核心页 200、E2E 7/7（PW_PORT=4399）、axe 5 页 0 违规、Lighthouse 100/100/100/100、verify-ci 27 项 scanned=208。产物核验：nav-search=1 / nav-links=6 / products h1=「产品」/ 7 张封面高度均 176px。
+
+**状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

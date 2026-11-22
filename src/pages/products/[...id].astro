@@ -23,13 +23,13 @@ const d = product.data;
 ---
 
 <BaseLayout
-  title={`${d.title} · 作品 · 巅峰软件`}
+  title={`${d.title} · 产品 · 巅峰软件`}
   description={d.summary}
   currentPath="/products"
   seo={{ type: 'product', image: d.cover, publishedAt: d.launch_date, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/products" class="back-link">← 返回作品</a>
+    <a href="/products" class="back-link">← 返回产品</a>
     <div class="title-row">
       <h1 class="page-title">{d.title}</h1>
       <span class="stage-pill">{STAGE_LABEL[d.stage] ?? d.stage}</span>
@@ -58,7 +58,7 @@ const d = product.data;
     </div>
 
     <section class="section-block" aria-labelledby="product-logs-heading">
-      <h2 id="product-logs-heading" class="section-sub">这个作品的创作记录</h2>
+      <h2 id="product-logs-heading" class="section-sub">这个产品的创作记录</h2>
       <div class="block-gap">
         <LogTimeline
           showAll

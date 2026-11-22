@@ -1,0 +1,42 @@
+---
+/**
+ * 退款说明页：明确付费产品（焕名）的退款规则、机器码/激活码口径与售后路径。
+ * 口径与焕名站（ren.dianfengsoft.cn）保持一致：7 天无理由、换机自助解绑。
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CTA } from '../lib/constants';
+---
+
+<BaseLayout title="退款说明 · 巅峰软件" description="焕名付费授权的退款规则与售后路径" currentPath="/about">
+  <div class="wrap page">
+    <h1 class="page-title">退款说明</h1>
+    <p class="lead-note">发布主体：巅峰软件（苏ICP备2026086890号-2）。本页说明付费产品（焕名文件批量重命名）的退款规则。</p>
+
+    <div class="prose prose-block">
+      <h2>一、适用范围</h2>
+      <p>本规则适用于焕名的付费授权（包年 ¥29 / 终身 ¥79 / 企业版咨询）。焕名的规则整理、特征整理等本地确定性能力<strong>永久免费</strong>，不涉及退款。</p>
+
+      <h2>二、7 天无理由退款</h2>
+      <ul>
+        <li>自购买之日起 7 天内，如对产品不满意，可申请无理由退款。</li>
+        <li>退款基于你的购买凭证（订单号 / 支付记录）与激活机器码核验，无需说明理由。</li>
+        <li>请通过<a href="/contact">联系页</a>或售后微信 dianfeng1998 提交申请，我们核对后按原支付渠道退回。</li>
+      </ul>
+
+      <h2>三、换机与授权</h2>
+      <ul>
+        <li>授权按机器码绑定，自动签发、绑定激活码；不通过个人收款码交易。</li>
+        <li>支持换机自助解绑，每个授权码提供 3 次解绑机会，正常换机无需人工介入。</li>
+        <li>因误操作耗尽解绑次数或有合理特殊情况，请联系售后处理。</li>
+      </ul>
+
+      <h2>四、企业版</h2>
+      <p>企业版的授权范围、部署方式与退款条款以双方书面约定为准；如需采购，请通过<a href={CTA.primary.href}>商务咨询</a>联系我们。</p>
+
+      <h2>五、售后支持</h2>
+      <p>使用问题、误报反馈、退款申请，均可通过<a href="/contact">联系页</a>或售后微信 dianfeng1998 提交。我们会在收到后尽快回复。</p>
+
+      <p class="lead-note">最近更新：{new Date().toISOString().slice(0, 10)}（随构建更新）</p>
+    </div>
+  </div>
+</BaseLayout>

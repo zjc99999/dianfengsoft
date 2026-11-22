@@ -1,0 +1,43 @@
+---
+/**
+ * 洞察与实践详情（L3 / 3 分钟层）。正文来自 MDX 渲染。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { getInsights } from '../../lib/queries';
+import { formatDate } from '../../lib/constants';
+
+export async function getStaticPaths() {
+  const insights = await getInsights();
+  return insights.map((i) => ({ params: { id: i.id }, props: { insight: i } }));
+}
+
+const { insight } = Astro.props;
+const { Content } = await render(insight);
+const d = insight.data;
+const KIND_LABEL: Record<string, string> = {
+  'dev-log': '开发手记',
+  changelog: '版本更新',
+  practice: '实践',
+  note: '随记',
+};
+---
+
+<BaseLayout
+  title={`${d.title} · 洞察与实践 · 巅峰软件`}
+  description={d.summary}
+  currentPath="/insights"
+  seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
+>
+  <article class="wrap page">
+    <a href="/insights" class="back-link">← 返回洞察与实践</a>
+    <p class="eyebrow">{KIND_LABEL[d.kind] ?? d.kind}</p>
+    <h1 class="page-title">{d.title}</h1>
+    <p class="page-lead">{d.summary}</p>
+    <p class="detail-meta">{formatDate(d.published_at)} 记录 · 巅峰软件</p>
+
+    <div class="prose prose-block">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

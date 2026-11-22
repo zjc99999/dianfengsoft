@@ -1,0 +1,86 @@
+---
+/**
+ * 作品卡片（L2 层）。用于首页「精选作品 ≤3」与 /products 列表。
+ * 只展示结构化事实：名称、一句话 tagline、状态标签、可见指标；不放长段落。
+ *
+ * M4：cover 来自内容集合的 image() helper（Astro 内部 sharp 优化，构建期产出
+ * 响应式尺寸并写入 width/height 防止 CLS）；<Image> 强制要求 alt，满足
+ * 「每张图有 alt 与尺寸」。R1 不 import sharp —— pnpm 严格隔离下传递依赖不可见
+ * （见 M4 探针结论），一律走 Astro 内置图片服务。
+ *
+ * 视觉：圆角面板 + 柔和阴影 + hover 上浮与封面微缩放（纯 CSS，global.css）。
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { STAGE_LABEL, formatDate } from '../lib/constants';
+
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  stage: string;
+  url?: string;
+  repoUrl?: string;
+  launchDate?: Date;
+  metrics?: Record<string, string | number>;
+  /** image() helper 解析出的 ImageMetadata；可选 */
+  cover?: ImageMetadata;
+  /**
+   * 卡片标题级别（M6 / axe heading-order）。首页卡片嵌在 <h2> 分区里 → h3；
+   * /products 列表页卡片直接挂在 <h1> 下 → 必须是 h2，否则 a11y 报跳级。
+   */
+  headingLevel?: 'h2' | 'h3';
+}
+
+const {
+  id, title, tagline, stage, url, repoUrl, launchDate,
+  metrics = {}, cover, headingLevel = 'h3',
+} = Astro.props;
+const stageLabel = STAGE_LABEL[stage] ?? stage;
+const metricEntries = Object.entries(metrics).slice(0, 3);
+const Heading = headingLevel;
+---
+
+<article class="card">
+  {
+    cover && (
+      <a href={`/products/${id}`} class="card-cover" aria-label={`${title} 详情`}>
+        <Image
+          src={cover}
+          alt={`${title} 的封面图`}
+          widths={[480, 800, 1200]}
+          sizes="(max-width: 640px) 100vw, 50vw"
+          loading="lazy"
+        />
+      </a>
+    )
+  }
+
+  <div class="card-body">
+    <div class="card-head">
+      <Heading class="card-title">
+        <a href={`/products/${id}`}>{title}</a>
+      </Heading>
+      <span class="stage-pill">{stageLabel}</span>
+    </div>
+
+    <p class="card-tagline">{tagline}</p>
+
+    {
+      metricEntries.length > 0 && (
+        <ul class="metrics">
+          {metricEntries.map(([k, v]) => (
+            <li><span class="k">{k}</span>: {String(v)}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="card-links">
+      <a href={`/products/${id}`}>看详情与创作记录</a>
+      {url && <a href={url} rel="noopener noreferrer">访问站点 ↗</a>}
+      {repoUrl && <a href={repoUrl} rel="noopener noreferrer">源码 ↗</a>}
+      {launchDate && <span class="date">{formatDate(launchDate)} 上线</span>}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,71 @@
+---
+/**
+ * 解决方案详情（L3 / 3 分钟层）。场景 / 做法 / 结果边界三段式，
+ * 正文来自 MDX 渲染，底部列出关联产品，形成「方案 → 能力」闭环。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { getSolutions, getProducts } from '../../lib/queries';
+import { formatDate } from '../../lib/constants';
+
+export async function getStaticPaths() {
+  const solutions = await getSolutions();
+  return solutions.map((s) => ({ params: { id: s.id }, props: { solution: s } }));
+}
+
+const { solution } = Astro.props;
+const { Content } = await render(solution);
+const d = solution.data;
+const allProducts = await getProducts();
+const relatedProducts = allProducts.filter((p) => d.related_product_ids.includes(p.id));
+---
+
+<BaseLayout
+  title={`${d.title} · 解决方案 · 巅峰软件`}
+  description={d.summary}
+  currentPath="/solutions"
+  seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
+>
+  <article class="wrap page">
+    <a href="/solutions" class="back-link">← 返回解决方案</a>
+    <h1 class="page-title">{d.title}</h1>
+    <p class="page-lead">{d.summary}</p>
+    <p class="detail-meta">{formatDate(d.published_at)} 发布</p>
+
+    <div class="detail-facts">
+      <div class="fact">
+        <h2 class="fact-title">适用场景</h2>
+        <p>{d.scene}</p>
+      </div>
+      <div class="fact">
+        <h2 class="fact-title">我们怎么做</h2>
+        <p>{d.approach}</p>
+      </div>
+      <div class="fact">
+        <h2 class="fact-title">结果边界</h2>
+        <p>{d.outcome}</p>
+      </div>
+    </div>
+
+    <div class="prose prose-block">
+      <Content />
+    </div>
+
+    {
+      relatedProducts.length > 0 && (
+        <section class="section-block" aria-labelledby="solution-products-heading">
+          <h2 id="solution-products-heading" class="section-sub">方案用到的产品</h2>
+          <ul class="evidence-grid">
+            {relatedProducts.map((p) => (
+              <li class="evidence-card">
+                <span class="evidence-kind">产品</span>
+                <a href={`/products/${p.id}`} class="evidence-card-title">{p.data.title} →</a>
+                <p class="card-summary">{p.data.tagline}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

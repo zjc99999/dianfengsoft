@@ -1,0 +1,61 @@
+{
+  "name": "dianfengsoft",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "sync": "astro sync",
+    "new:log": "node scripts/new-log.mjs",
+    "new:product": "node scripts/new-product.mjs",
+    "new:capability": "node scripts/new-capability.mjs",
+    "changelog": "node scripts/changelog.mjs",
+    "export:all": "node scripts/export-all.mjs",
+    "test": "pnpm check && pnpm test:rules && pnpm test:unit",
+    "test:rules": "node scripts/verify-hard-rules.mjs",
+    "test:unit": "vitest run",
+    "test:lh": "node scripts/lh-check.mjs",
+    "test:axe": "node scripts/axe-check.mjs",
+    "test:csp": "node scripts/csp-check.mjs",
+    "test:pw": "playwright test",
+    "serve": "node scripts/serve.mjs",
+    "deploy:smoke": "node scripts/deploy-smoke.mjs",
+    "deploy:smoke:remote": "node scripts/deploy-smoke.mjs",
+    "test:perf": "node scripts/perf-check.mjs",
+    "test:search": "node scripts/verify-search.mjs",
+    "test:lead": "node scripts/verify-lead.mjs",
+    "test:nodynamic": "node scripts/verify-no-dynamic.mjs",
+    "test:e2e": "pnpm test:perf && pnpm test:search && pnpm test:lead && pnpm test:nodynamic && pnpm test:pw",
+    "quality": "pnpm build && pnpm test:csp && pnpm test && pnpm verify:ci",
+    "quality:browser": "pnpm test:e2e && pnpm test:lh && pnpm test:axe",
+    "verify:ci": "node scripts/verify-ci.mjs",
+    "pagefind": "node scripts/pagefind-index.mjs",
+    "make:cover": "node scripts/make-cover.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "8.1.5",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.4.11",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@playwright/test": "1.65.0",
+    "@tailwindcss/vite": "4.3.5",
+    "@types/node": "24.19.2",
+    "axe-core": "4.14.0",
+    "lighthouse": "13.6.0",
+    "pagefind": "1.6.0",
+    "tailwindcss": "4.3.5",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  },
+  "packageManager": "pnpm@11.28.5",
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

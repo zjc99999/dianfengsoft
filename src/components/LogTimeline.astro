@@ -1,0 +1,64 @@
+---
+/**
+ * 创作日志时间线（L2/L3）。按日期倒序，每条只露：类型徽标、日期、标题、摘要。
+ * 正文与「读 100%」的深度消费留在 /log/[id] 详情页。
+ *
+ * 视觉：强调色渐变竖线 + 圆环节点（纯 CSS，见 global.css 的 .timeline）。
+ */
+import { KIND_LABEL, formatDate } from '../lib/constants';
+
+interface LogItem {
+  id: string;
+  title: string;
+  summary: string;
+  kind: string;
+  publishedAt: Date;
+  /** 可选：所属作品标签（跨项目混合时间线用） */
+  project?: { label: string; isSite?: boolean };
+}
+
+interface Props {
+  items: LogItem[];
+  /** 为真时每条都渲染，用于 /log 全量列表；首页只传前 3 条 */
+  showAll?: boolean;
+  /**
+   * 条目标题级别（M6 / axe heading-order）。首页嵌在 <h2> 分区里 → h3；
+   * /log 列表页直接挂在 <h1> 下 → h2，避免跳级。
+   */
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { items, showAll = false, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<ol class="timeline">
+  {
+    items.map((item) => (
+      <li>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-meta">
+          <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
+          <span class="tl-kind">{KIND_LABEL[item.kind] ?? item.kind}</span>
+          {item.project && (
+            <span class:list={['tl-project', { 'is-site': item.project.isSite }]}>
+              {item.project.isSite ? '站点' : `项目 · ${item.project.label}`}
+            </span>
+          )}
+        </div>
+        <Heading class="tl-title">
+          <a href={`/log/${item.id}`}>{item.title}</a>
+        </Heading>
+        <p class="tl-summary">{item.summary}</p>
+      </li>
+    ))
+  }
+</ol>
+
+{
+  !showAll && items.length > 0 && (
+    <p class="timeline-more">
+      <a href="/log">查看全部创作日志 →</a>
+    </p>
+  )
+}

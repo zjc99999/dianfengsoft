@@ -1,0 +1,66 @@
+﻿---
+/**
+ * 联系页：主 CTA 落地页（M5）。
+ * 表单与订阅共用 SubscribeForm；预约外链仅在 PUBLIC_CAL_URL 配置时渲染（不留死链）。
+ * 方案 A 下没有任何后端：即使表单端点全部失效，本页仍完整可读、邮件兜底仍可点。
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SubscribeForm from '../components/SubscribeForm.astro';
+import { getEntry } from 'astro:content';
+import { PUBLIC_CONFIG } from '../lib/config';
+
+const profile = (await getEntry('profile', 'me'))!.data;
+const calUrl = PUBLIC_CONFIG.calUrl;
+---
+
+<BaseLayout title="联系 · 巅峰软件" description="聊聊你的项目，或从一顿 30 分钟的通话开始" currentPath="/contact">
+  <div class="wrap page">
+    <h1 class="page-title">聊聊你的项目</h1>
+    <p class="page-lead">
+      说清楚你想解决什么问题就够了，不用准备文档。合适的话我们再约时间细聊。
+    </p>
+
+    <div class="block-gap">
+      <SubscribeForm mode="contact" />
+    </div>
+
+    {
+      calUrl && (
+        <section class="section-block" aria-labelledby="booking-heading">
+          <h2 id="booking-heading" class="section-sub">或直接约个时间</h2>
+          <p class="lead-note">
+            30 分钟，不推销。链接会跳转到第三方预约页，只有你点击时才会加载它。
+          </p>
+          <a
+            href={calUrl}
+            rel="noopener noreferrer"
+            data-booking-link
+            class="btn btn-ghost"
+            >预约 30 分钟通话 ↗</a
+          >
+        </section>
+      )
+    }
+
+    {
+      profile.contact_channels.length > 0 && (
+        <section class="section-block" aria-labelledby="channels-heading">
+          <h2 id="channels-heading" class="section-sub">其他方式</h2>
+          <ul class="channel-list">
+            {profile.contact_channels.map((c) => (
+              <li>
+                <span class="muted">{c.label}：</span>
+                {c.url ? (
+                  <a href={c.url}>{c.value ?? c.url.replace(/^mailto:/, '')} ↗</a>
+                ) : (
+                  // 微信号不是 URL，按纯文本展示，不造死链、不引入复制按钮所需的客户端 JS
+                  <code class="chip-code">{c.value}</code>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>

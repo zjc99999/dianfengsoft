@@ -1,0 +1,38 @@
+---
+/**
+ * 洞察与实践列表（L3）。只写自有内容——开发手记、版本更新、技术实践，
+ * 不单设"AI 动态"板块。用我们做过的事建立可信度。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getInsights } from '../../lib/queries';
+import { formatDate } from '../../lib/constants';
+
+const insights = await getInsights();
+const KIND_LABEL: Record<string, string> = {
+  'dev-log': '开发手记',
+  changelog: '版本更新',
+  practice: '实践',
+  note: '随记',
+};
+---
+
+<BaseLayout title="洞察与实践 · 巅峰软件" description="开发手记、版本更新与技术实践——只写我们真实做过的事" currentPath="/insights">
+  <div class="wrap page">
+    <h1 class="page-title">洞察与实践</h1>
+    <p class="page-lead">我们不做"AI 动态"这类拼凑板块。这里只有自己做过的实践：开发手记、版本更新、以及技术取舍背后的思考。</p>
+
+    <div class="block-gap">
+      <ul class="insight-list">
+        {insights.map((i) => (
+          <li class="insight-item">
+            <p class="eyebrow">{KIND_LABEL[i.data.kind] ?? i.data.kind} · {formatDate(i.data.published_at)}</p>
+            <h2 class="card-title"><a href={`/insights/${i.id}`}>{i.data.title}</a></h2>
+            <p class="card-summary">{i.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {insights.length === 0 && <p class="empty-note">还没有公开的洞察与实践。</p>}
+  </div>
+</BaseLayout>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# sitemap 由 @astrojs/sitemap 生成；M7 已换成真实自定义域名
+Sitemap: https://www.dianfengsoft.cn/sitemap-index.xml

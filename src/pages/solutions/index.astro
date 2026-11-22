@@ -1,0 +1,36 @@
+---
+/**
+ * 解决方案列表（L3）。每个方案 = 适用场景 + 做法 + 结果边界，结构化呈现。
+ * 用自有能力（产品/场景）组织，不指向任何未授权客户。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getSolutions, getProducts } from '../../lib/queries';
+
+const solutions = await getSolutions();
+const products = await getProducts();
+const productMap = new Map(products.map((p) => [p.id, p.data.title]));
+---
+
+<BaseLayout title="解决方案 · 巅峰软件" description="用信息技术与 AI 解决真实场景问题——做法透明、结果有边界" currentPath="/solutions">
+  <div class="wrap page">
+    <h1 class="page-title">解决方案</h1>
+    <p class="page-lead">从适用场景出发，说清楚我们怎么做、结果边界在哪。每个方案都挂在真实产品能力上。</p>
+
+    <div class="card-grid">
+      {solutions.map((s) => (
+        <article class="card">
+          <p class="eyebrow">适用场景</p>
+          <h2 class="card-title"><a href={`/solutions/${s.id}`}>{s.data.title}</a></h2>
+          <p class="card-summary">{s.data.summary}</p>
+          {
+            s.data.related_product_ids.length > 0 && (
+              <p class="card-meta">关联产品：{s.data.related_product_ids.map((id) => productMap.get(id) ?? id).join('、')}</p>
+            )
+          }
+        </article>
+      ))}
+    </div>
+
+    {solutions.length === 0 && <p class="empty-note">还没有公开的解决方案。</p>}
+  </div>
+</BaseLayout>

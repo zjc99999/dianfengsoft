@@ -1,0 +1,55 @@
+---
+/**
+ * 场景案例列表（L3）。初期只放 kind=scene 的典型应用场景演示，
+ * 明确标注"不指向任何客户"；有书面授权的客户案例（kind=client）才另列。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCases, getProducts } from '../../lib/queries';
+import { formatDate } from '../../lib/constants';
+
+const cases = await getCases();
+const products = await getProducts();
+const productMap = new Map(products.map((p) => [p.id, p.data.title]));
+const productIdOf = (ref: string | { collection: string; id: string } | undefined): string =>
+  ref ? (typeof ref === 'string' ? ref : ref.id) : '';
+const sceneCases = cases.filter((c) => c.data.kind === 'scene');
+const clientCases = cases.filter((c) => c.data.kind === 'client');
+---
+
+<BaseLayout title="场景案例 · 巅峰软件" description="真实产品工作流演示——过程可见、数据去向透明、不指向任何未授权客户" currentPath="/cases">
+  <div class="wrap page">
+    <h1 class="page-title">场景案例</h1>
+    <p class="page-lead">这里展示的是<strong>典型应用场景演示</strong>：用产品自带示例走一遍真实工作流，不指向任何客户或单位。有书面授权的客户案例才会单独标注发布。</p>
+
+    <div class="card-grid">
+      {sceneCases.map((c) => (
+        <article class="card">
+          <p class="eyebrow">场景演示</p>
+          <h2 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h2>
+          <p class="card-summary">{c.data.summary}</p>
+          <p class="card-meta">
+            {productIdOf(c.data.product_id) && productMap.get(productIdOf(c.data.product_id)) && <>产品：{productMap.get(productIdOf(c.data.product_id))} · </>}
+            {formatDate(c.data.published_at)}
+          </p>
+        </article>
+      ))}
+    </div>
+
+    {clientCases.length > 0 && (
+      <section class="section-block" aria-labelledby="client-cases-heading">
+        <h2 id="client-cases-heading" class="section-sub">客户案例（经授权）</h2>
+        <div class="card-grid">
+          {clientCases.map((c) => (
+            <article class="card">
+              <p class="eyebrow">客户案例 · 已获授权</p>
+              <h2 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h2>
+              <p class="card-summary">{c.data.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {cases.length === 0 && <p class="empty-note">还没有公开的场景案例。</p>}
+  </div>
+</BaseLayout>

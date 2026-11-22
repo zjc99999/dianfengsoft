@@ -1,0 +1,56 @@
+---
+/**
+ * 全站页脚（企业门户版）。社交外链 ≤3 且只在页脚（E6）；来源为 profile.json 的 socials。
+ * 企业合规必备：备案号（工信部要求页脚展示）、隐私政策/服务条款/退款说明法务三页入口。
+ */
+import { SOCIAL_LIMIT } from '../lib/constants';
+
+interface Social {
+  label: string;
+  url: string;
+}
+interface Props {
+  name: string;
+  icpNo?: string;
+  socials?: Social[];
+}
+const { name, icpNo = '', socials = [] } = Astro.props;
+const links = socials.slice(0, SOCIAL_LIMIT);
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>© {new Date().getFullYear()} {name} · 用信息技术与 AI，做普通人用得上的软件</p>
+    {
+      links.length > 0 && (
+        <ul class="footer-links">
+          {links.map((s) => (
+            <li>
+              <a href={s.url} rel="me noopener noreferrer">{s.label} ↗</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <p class="footer-links">
+      <a href="/solutions">解决方案</a>
+      <a href="/cases">场景案例</a>
+      <a href="/responsibility">社会责任</a>
+      <a href="/insights">洞察与实践</a>
+    </p>
+    <p class="footer-links">
+      <a href="/contact">联系</a>
+      <a href="/privacy">隐私政策</a>
+      <a href="/terms">服务条款</a>
+      <a href="/refund">退款说明</a>
+      <a href="/rss.xml">RSS</a>
+    </p>
+    {
+      icpNo && (
+        <p class="footer-icp">
+          <a href="https://beian.miit.gov.cn/" rel="noopener noreferrer" target="_blank">{icpNo}</a>
+        </p>
+      )
+    }
+  </div>
+</footer>

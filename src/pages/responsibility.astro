@@ -1,0 +1,9 @@
+---
+/** 社会责任页：隐私优先、免费层长期可用、信息透明——把承诺写进产品。 */
+import StaticPage from '../components/StaticPage.astro';
+import { getPage } from '../lib/queries';
+const entry = await getPage('responsibility');
+if (!entry) throw new Error('[content] 缺少 pages 集合中的 responsibility 内容');
+---
+
+<StaticPage entry={entry} currentPath="/responsibility" />

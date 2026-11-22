@@ -1,0 +1,69 @@
+---
+/**
+ * 场景案例详情（L3 / 3 分钟层）。正文含真实截图与工作流说明，
+ * 顶部按 kind 显示"场景演示"或"客户案例（已授权）"标签，明确性质。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { getCases, getProducts } from '../../lib/queries';
+import { formatDate } from '../../lib/constants';
+
+export async function getStaticPaths() {
+  const cases = await getCases();
+  return cases.map((c) => ({ params: { id: c.id }, props: { caseEntry: c } }));
+}
+
+const { caseEntry } = Astro.props;
+const { Content } = await render(caseEntry);
+const d = caseEntry.data;
+const allProducts = await getProducts();
+const productId = d.product_id
+  ? typeof d.product_id === 'string' ? d.product_id : d.product_id.id
+  : undefined;
+const product = productId ? allProducts.find((p) => p.id === productId) : undefined;
+---
+
+<BaseLayout
+  title={`${d.title} · 场景案例 · 巅峰软件`}
+  description={d.summary}
+  currentPath="/cases"
+  seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
+>
+  <article class="wrap page">
+    <a href="/cases" class="back-link">← 返回场景案例</a>
+    <p class="eyebrow">{d.kind === 'client' ? '客户案例 · 已获书面授权' : '典型应用场景演示 · 不指向任何客户'}</p>
+    <h1 class="page-title">{d.title}</h1>
+    <p class="page-lead">{d.summary}</p>
+    <p class="detail-meta">
+      {formatDate(d.published_at)}{product && <> · 关联产品：<a href={`/products/${product.id}`}>{product.data.title}</a></>}
+    </p>
+
+    <div class="detail-facts">
+      <div class="fact">
+        <h2 class="fact-title">问题</h2>
+        <p>{d.problem}</p>
+      </div>
+      <div class="fact">
+        <h2 class="fact-title">做法</h2>
+        <p>{d.solution}</p>
+      </div>
+    </div>
+
+    <div class="prose prose-block">
+      <Content />
+    </div>
+
+    {
+      Object.keys(d.outcome).length > 0 && (
+        <section class="section-block" aria-labelledby="case-outcome-heading">
+          <h2 id="case-outcome-heading" class="section-sub">结果边界</h2>
+          <dl class="fact-list">
+            {Object.entries(d.outcome).map(([k, v]) => (
+              <div class="fact-row"><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

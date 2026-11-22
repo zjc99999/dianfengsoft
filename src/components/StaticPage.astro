@@ -1,0 +1,29 @@
+﻿---
+/** 通用静态内容页渲染（about / now / uses / services / pricing 共用）。 */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'pages'>;
+  currentPath?: string;
+}
+
+const { entry, currentPath } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={`${entry.data.title} · 巅峰软件`}
+  description={entry.data.summary}
+  currentPath={currentPath}
+  seo={{ type: 'article', publishedAt: entry.data.published_at, modifiedAt: entry.data.updated_at, seo: entry.data.seo }}
+>
+  <article class="wrap page">
+    <h1 class="page-title">{entry.data.title}</h1>
+    <p class="page-lead">{entry.data.summary}</p>
+    <div class="prose prose-block">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

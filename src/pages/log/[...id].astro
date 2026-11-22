@@ -1,0 +1,61 @@
+---
+/**
+ * 单条创作日志详情（L3）。深度消费层：正文 + 关联作品 + 相关记录。
+ * render(entry) → <Content />；related_ids 用 getRelatedLogs 解析。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { getLogs, getRelatedLogs } from '../../lib/queries';
+import { KIND_LABEL, formatDate } from '../../lib/constants';
+
+export async function getStaticPaths() {
+  const logs = await getLogs();
+  return logs.map((l) => ({ params: { id: l.id }, props: { log: l } }));
+}
+
+const { log: entry } = Astro.props;
+const { Content } = await render(entry);
+const related = await getRelatedLogs(entry);
+const d = entry.data;
+---
+
+<BaseLayout
+  title={`${d.title} · 创作日志 · 巅峰软件`}
+  description={d.summary}
+  currentPath="/log"
+  seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
+>
+  <article class="wrap page">
+    <a href="/log" class="back-link">← 返回日志</a>
+    <div class="tl-meta">
+      <time datetime={d.published_at.toISOString()}>{formatDate(d.published_at)}</time>
+      <span class="tl-kind">{KIND_LABEL[d.kind] ?? d.kind}</span>
+    </div>
+    <h1 class="page-title">{d.title}</h1>
+    <p class="page-lead">{d.summary}</p>
+
+    <div class="prose prose-block">
+      <Content />
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="section-block" aria-labelledby="related-heading">
+          <h2 id="related-heading" class="section-sub">相关记录</h2>
+          <ul class="related-list">
+            {related.map((r) => (
+              <li>
+                <a href={`/log/${r.id}`}>{r.data.title}</a>
+                <span class="subtle"> · {formatDate(r.data.published_at)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <p class="timeline-more">
+      <a href="/log">查看全部创作日志 →</a>
+    </p>
+  </article>
+</BaseLayout>

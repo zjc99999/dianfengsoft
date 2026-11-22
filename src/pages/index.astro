@@ -1,0 +1,174 @@
+---
+/**
+ * 企业门户首页：三层披露的 L1（Hero，首屏不滚动）+ L2（一次滚动即可看到）。
+ *
+ * 首屏硬性预算（E6）逐项核对：
+ *  - 身份 1 句 / 价值主张 1 句：来自 profile.json（唯一数据源）
+ *  - 主 CTA 1 + 次 CTA 1：Hero 内
+ *  - 导航 ≤5：BaseLayout → Nav
+ *  - 作品卡 ≤3：FEATURED_LIMIT
+ *  - 零客户端 JS：本页无 <script>、无 client:* 指令
+ *
+ * 企业化改造：把个人站的「精选作品 → 创作记录 → 能力证据」脊线，
+ * 升级为「解决方案 → 产品 → 场景案例 → 洞察与实践 → 能力（附证据）」，
+ * 并在收束段加入社会责任入口。阅读路径与递进脊线均为纯 HTML + CSS。
+ *
+ * 证据链在构建期解析（src/lib/evidence.ts），坏 id 会让 astro build 失败。
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CapabilityList from '../components/CapabilityList.astro';
+import CTA from '../components/CTA.astro';
+import { getEntry } from 'astro:content';
+import { FEATURED_LIMIT, CAPABILITY_LIMIT, formatDate } from '../lib/constants';
+import {
+  getSolutions,
+  getFeaturedProducts,
+  getCases,
+  getInsights,
+  getCapabilities,
+} from '../lib/queries';
+import { resolveEvidenceList } from '../lib/evidence';
+
+const profile = (await getEntry('profile', 'me'))!.data;
+
+const solutions = (await getSolutions()).slice(0, 3);
+const products = await getFeaturedProducts(FEATURED_LIMIT);
+const sceneCases = (await getCases()).filter((c) => c.data.kind === 'scene').slice(0, 3);
+const insights = (await getInsights()).slice(0, 3);
+
+const capabilities = (await getCapabilities()).slice(0, CAPABILITY_LIMIT);
+const capItems = await Promise.all(
+  capabilities.map(async (c) => ({
+    id: c.id,
+    category: c.data.category,
+    statement: c.data.statement,
+    evidence: await resolveEvidenceList(c.data.evidence_ids),
+  })),
+);
+---
+
+<BaseLayout currentPath="/">
+  <!-- L1 / 3 秒层 -->
+  <Hero
+    availability={profile.availability}
+    headline={profile.headline}
+    value={profile.value}
+  />
+
+  <!-- L2 / 30 秒层：先给一张阅读路径地图，再沿递进脊线逐层展开 -->
+  <div class="l2">
+    <div class="wrap">
+      <div class="path-ribbon">
+        <p class="eyebrow">阅读路径 · 从承诺到合作</p>
+        <ol>
+          <li><a href="#hero-title">身份</a></li>
+          <li><a href="#solution-heading">解决方案</a></li>
+          <li><a href="#featured-heading">产品</a></li>
+          <li><a href="#case-heading">场景案例</a></li>
+          <li><a href="#insight-heading">洞察与实践</a></li>
+          <li><a href="#cta-heading" class="is-dest">开始合作</a></li>
+        </ol>
+      </div>
+
+      <div class="progression">
+        <section class="step" aria-labelledby="solution-heading">
+          <span class="step-index" aria-hidden="true">01</span>
+          <div class="step-body">
+            <p class="eyebrow">SOLUTION · 先看你怎么做</p>
+            <h2 id="solution-heading" class="section-title">解决方案</h2>
+            <p class="section-lead">从真实场景出发，做法透明、结果有边界。</p>
+            <div class="card-grid">
+              {solutions.map((s) => (
+                <article class="card">
+                  <h3 class="card-title"><a href={`/solutions/${s.id}`}>{s.data.title}</a></h3>
+                  <p class="card-summary">{s.data.summary}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="step" aria-labelledby="featured-heading">
+          <span class="step-index" aria-hidden="true">02</span>
+          <div class="step-body">
+            <p class="eyebrow">PRODUCT · 再看做了什么</p>
+            <h2 id="featured-heading" class="section-title">产品</h2>
+            <p class="section-lead">每个都能点进去看能力与记录，用结果说话。</p>
+            <div class="card-grid">
+              {products.map((p) => (
+                <ProductCard
+                  id={p.id}
+                  title={p.data.title}
+                  tagline={p.data.tagline}
+                  stage={p.data.stage}
+                  url={p.data.url}
+                  repoUrl={p.data.repo_url}
+                  launchDate={p.data.launch_date}
+                  metrics={p.data.metrics}
+                  cover={p.data.cover}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="step" aria-labelledby="case-heading">
+          <span class="step-index" aria-hidden="true">03</span>
+          <div class="step-body">
+            <p class="eyebrow">SCENE · 过程演示给你看</p>
+            <h2 id="case-heading" class="section-title">场景案例</h2>
+            <p class="section-lead">真实工作流演示，不指向任何未授权客户。</p>
+            <div class="card-grid">
+              {sceneCases.map((c) => (
+                <article class="card">
+                  <h3 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h3>
+                  <p class="card-summary">{c.data.summary}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="step" aria-labelledby="insight-heading">
+          <span class="step-index" aria-hidden="true">04</span>
+          <div class="step-body">
+            <p class="eyebrow">PRACTICE · 只写我们做过的事</p>
+            <h2 id="insight-heading" class="section-title">洞察与实践</h2>
+            <p class="section-lead">开发手记、版本更新、技术取舍——用自有实践建立可信度。</p>
+            <ul class="insight-list">
+              {insights.map((i) => (
+                <li class="insight-item">
+                  <a href={`/insights/${i.id}`}>{i.data.title}</a>
+                  <span class="insight-date">{formatDate(i.data.published_at)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section class="step" aria-labelledby="cap-heading">
+          <span class="step-index" aria-hidden="true">05</span>
+          <div class="step-body">
+            <p class="eyebrow">PROOF · 每条能力都附证据</p>
+            <h2 id="cap-heading" class="section-title">能力（附证据）</h2>
+            <p class="section-lead">不写「精通 XX」，每条都链接到具体作品或日志。</p>
+            <CapabilityList items={capItems} />
+          </div>
+        </section>
+
+        <section class="step" aria-label="第六步 · 社会责任与合作">
+          <span class="step-index" aria-hidden="true">06</span>
+          <div class="step-body">
+            <p class="section-note">
+              隐私优先、免费层长期可用、信息透明——
+              <a href="/responsibility">这是我们的社会责任承诺 →</a>
+            </p>
+            <CTA />
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

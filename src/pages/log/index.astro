@@ -1,0 +1,28 @@
+﻿---
+/** 创作日志全量列表（L3）。支持 6 种短类型，100 字也能发（EX-6 防弃更）。 */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LogTimeline from '../../components/LogTimeline.astro';
+import { getLogs, getLogTimelineItems } from '../../lib/queries';
+
+const logs = await getLogs();
+const items = await getLogTimelineItems(logs);
+---
+
+<BaseLayout title="创作日志 · 巅峰软件" description="从想法到上线的全过程记录" currentPath="/log">
+  <div class="wrap page">
+    <h1 class="page-title">创作日志</h1>
+    <p class="page-lead">
+      决策、构建记录、变更、随记、复盘、近况——不一定长，但都是真的。
+    </p>
+
+    <div class="block-gap">
+      <LogTimeline
+        showAll
+        headingLevel="h2"
+        items={items}
+      />
+    </div>
+
+    {logs.length === 0 && <p class="empty-note">还没有公开的记录。</p>}
+  </div>
+</BaseLayout>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Atelier · 造物间 — 设计系统
-   暖纸底 / 墨色 / 单一赤陶强调色。原生 CSS 变量（CSS-first），零新增依赖，
+   巅峰软件 — 企业门户设计系统（科技感）
+   深空蓝 / 冷白 / 青蓝-靛蓝双强调色。原生 CSS 变量（CSS-first），零新增依赖，
    不引入 @theme（避免 Tailwind 4 生成差异）。所有装饰与动效均为纯 CSS：
    无客户端 JS、无内联 style 属性、无 on* 事件属性（CSP 门禁）。
 
@@ -13,54 +13,33 @@
    ========================================================================== */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
-  --paper: #faf7f2;
-  --surface: #ffffff;
-  --surface-2: #f3ede4;
-  --ink: #1c1917;
-  --muted: #57534e;
-  --subtle: #6b655e;
-  --line: rgba(28, 25, 23, 0.11);
-  --line-strong: rgba(28, 25, 23, 0.3);
-  --accent: #c2542f;
-  --accent-ink: #9a3a20;
-  --accent-line: rgba(194, 84, 47, 0.38);
-  --accent-glow: rgba(194, 84, 47, 0.13);
-  --accent-soft: rgba(194, 84, 47, 0.1);
-  --btn-bg: #9a3a20;
-  --btn-bg-hover: #7f2e19;
-  --btn-ink: #ffffff;
-  --header-bg: rgba(250, 247, 242, 0.93);
-  --input-border: #78716c;
-  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04), 0 6px 18px rgba(28, 25, 23, 0.05);
-  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.07), 0 18px 40px rgba(28, 25, 23, 0.09);
-  --content: 70rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #16130f;
-    --surface: #1e1a16;
-    --surface-2: #262019;
-    --ink: #f5efe6;
-    --muted: #d3c9bc;
-    --subtle: #c0b3a4;
-    --line: rgba(245, 239, 230, 0.13);
-    --line-strong: rgba(245, 239, 230, 0.32);
-    --accent: #e08a63;
-    --accent-ink: #f2a982;
-    --accent-line: rgba(224, 138, 99, 0.45);
-    --accent-glow: rgba(224, 138, 99, 0.16);
-    --accent-soft: rgba(224, 138, 99, 0.13);
-    --btn-bg: #b8492a;
-    --btn-bg-hover: #9c3a20;
-    --btn-ink: #ffffff;
-    --header-bg: rgba(22, 19, 15, 0.93);
-    --input-border: #8b8075;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35), 0 18px 40px rgba(0, 0, 0, 0.4);
-  }
+  /* 深空蓝底 + 青蓝/靛蓝双强调 —— 站点默认主题（企业科技风，用户确认选深色款） */
+  --paper: #070e1a;
+  --surface: #0e1a2e;
+  --surface-2: #152540;
+  --ink: #e8f1fb;
+  --muted: #9fb2c9;
+  --subtle: #8499b3;
+  --line: rgba(168, 200, 235, 0.13);
+  --line-strong: rgba(168, 200, 235, 0.3);
+  --accent: #22d3ee;
+  --accent-2: #818cf8;
+  --accent-ink: #67e8f9;
+  --accent-line: rgba(34, 211, 238, 0.42);
+  --accent-glow: rgba(34, 211, 238, 0.16);
+  --accent-soft: rgba(129, 140, 248, 0.12);
+  --btn-bg: #22d3ee;
+  --btn-bg-hover: #67e8f9;
+  --btn-ink: #04121f;
+  --header-bg: rgba(7, 14, 26, 0.9);
+  --input-border: #4a5f7a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45), 0 18px 40px rgba(0, 0, 0, 0.5);
+  --content: 72rem;
+  /* 科技网格纹理（极淡，只在 Hero / CTA 用） */
+  --grid-line: rgba(34, 211, 238, 0.07);
 }
 
 html {
@@ -148,6 +127,17 @@ main {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-line), var(--accent-2), var(--accent-line), transparent);
+  opacity: 0.7;
+  pointer-events: none;
+}
 .header-inner {
   display: flex;
   align-items: center;
@@ -169,15 +159,12 @@ main {
 .brand:hover {
   color: var(--ink);
 }
-.brand-mark {
-  display: grid;
-  place-items: center;
+.brand-logo {
+  display: block;
   width: 2.15rem;
   height: 2.15rem;
-  border-radius: 0.7rem;
-  background: var(--btn-bg);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(154, 58, 32, 0.28);
+  border-radius: 0.6rem;
+  object-fit: contain;
 }
 .main-nav {
   display: flex;
@@ -275,15 +262,15 @@ main {
     background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 .btn-primary {
-  background: var(--btn-bg);
+  background: linear-gradient(135deg, var(--btn-bg), var(--accent-2));
   color: var(--btn-ink);
-  box-shadow: 0 6px 18px rgba(154, 58, 32, 0.22);
+  box-shadow: 0 6px 18px var(--accent-glow);
 }
 .btn-primary:hover {
-  background: var(--btn-bg-hover);
+  background: linear-gradient(135deg, var(--btn-bg-hover), var(--accent-2));
   color: var(--btn-ink);
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(154, 58, 32, 0.28);
+  box-shadow: 0 12px 26px var(--accent-line);
 }
 .btn-ghost {
   background: var(--surface);
@@ -297,39 +284,42 @@ main {
   box-shadow: var(--shadow-sm);
 }
 
-/* ---------- 首屏 L1 ---------- */
+/* ---------- 首屏 L1（科技感：细网格 + 冷光晕 + 数据流轨道） ---------- */
 .hero {
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(70% 90% at 88% 8%, var(--accent-glow), transparent 65%),
-    radial-gradient(60% 80% at 4% 100%, var(--accent-soft), transparent 70%),
+    radial-gradient(60% 120% at 85% 0%, var(--accent-glow), transparent 60%),
+    radial-gradient(50% 90% at 0% 100%, var(--accent-soft), transparent 70%),
     var(--surface);
 }
+/* 细科技网格 + 渐隐遮罩：纯 CSS，零 LCP/CLS，不承担信息 */
 .hero::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(var(--line-strong) 1px, transparent 1.2px);
-  background-size: 22px 22px;
-  opacity: 0.5;
-  -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000 100%);
-  mask-image: linear-gradient(90deg, transparent 35%, #000 100%);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(80% 80% at 70% 40%, #000, transparent 85%);
+  mask-image: radial-gradient(80% 80% at 70% 40%, #000, transparent 85%);
 }
-/* 纯 CSS 同心圆装饰：呼应「造物间」的手作工作台，不引入图片，零 LCP/CLS 代价 */
+/* 右侧「数据轨道」装饰：同心圆 + 扫描线，纯 CSS 合成层动画 */
 .hero-art {
   position: absolute;
-  right: 5%;
+  right: 6%;
   top: 50%;
-  width: clamp(12rem, 26vw, 21rem);
+  width: clamp(13rem, 28vw, 23rem);
   aspect-ratio: 1;
   transform: translateY(-50%);
   border: 1px solid var(--accent-line);
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.75;
   pointer-events: none;
+  box-shadow: 0 0 60px var(--accent-glow) inset;
 }
 .hero-art::before,
 .hero-art::after {
@@ -338,12 +328,20 @@ main {
   border-radius: 50%;
 }
 .hero-art::before {
-  inset: 15%;
-  border: 1px solid var(--accent-line);
+  inset: 14%;
+  border: 1px dashed var(--accent-line);
+  animation: orbit 24s linear infinite;
 }
 .hero-art::after {
-  inset: 32%;
-  background: var(--accent-soft);
+  inset: 36%;
+  background: radial-gradient(circle, var(--accent-glow), var(--accent-soft) 60%, transparent 72%);
+  border: 1px solid var(--accent-line);
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
 }
 @media (max-width: 860px) {
   .hero-art {
@@ -359,14 +357,16 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.35rem 0.85rem;
+  padding: 0.38rem 0.95rem;
   border: 1px solid var(--accent-line);
   border-radius: 999px;
   background: var(--surface);
   color: var(--accent-ink);
-  font-size: 0.8rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 .status-dot {
   position: relative;
@@ -397,21 +397,25 @@ main {
   }
 }
 .hero-title {
-  max-width: 20ch;
+  max-width: 22ch;
   margin: 1.5rem 0 0;
-  font-size: clamp(2.6rem, 6.5vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 4.3rem);
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.14;
   letter-spacing: -0.035em;
+  /* 纯色文字：避免 background-clip:text + 透明填充被 axe 误判为对比度失败。
+     科技感由网格/光晕/数据轨道/渐变按钮承载，标题保持高对比纯色。 */
+  color: var(--ink);
 }
 .hero-title::after {
   content: "";
   display: block;
-  width: 4.5rem;
-  height: 0.3rem;
+  width: 5rem;
+  height: 0.28rem;
   margin-top: 1.4rem;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 16px var(--accent-line);
 }
 .hero-value {
   max-width: 46ch;
@@ -516,11 +520,11 @@ main {
   width: 44px;
   height: 44px;
   border: 1px solid var(--accent-line);
-  border-radius: 50%;
-  background: var(--surface);
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--accent-glow), var(--surface));
   color: var(--accent-ink);
-  font: 700 0.8rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
-  box-shadow: var(--shadow-sm);
+  font: 700 0.82rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  box-shadow: var(--shadow-sm), 0 0 18px var(--accent-glow);
 }
 .step-body {
   min-width: 0;
@@ -568,6 +572,7 @@ main {
   margin-top: 1.75rem;
 }
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -577,10 +582,25 @@ main {
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+/* 顶部渐变细描边：科技感工程线，纯 CSS 伪元素 */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent);
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
 .card:hover {
   transform: translateY(-4px);
   border-color: var(--accent-line);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 28px var(--accent-glow);
+}
+.card:hover::before {
+  opacity: 1;
 }
 .card-cover {
   display: block;
@@ -906,7 +926,10 @@ main {
   border-radius: 1.5rem;
   background:
     radial-gradient(110% 130% at 100% 0%, var(--accent-glow), transparent 60%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
     var(--surface);
+  background-size: auto, 36px 36px, 36px 36px, auto;
   box-shadow: var(--shadow-md);
 }
 .cta-panel::before {
@@ -916,7 +939,14 @@ main {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% 100%;
+  animation: shimmer 6s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }
 .cta-title {
   margin: 0;

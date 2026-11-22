@@ -44,3 +44,21 @@
 **关键排障**：`verify:ci` 曾因密钥扫描 scanned=0 失败——根因是新目录无 `.git`，`git ls-files` 返回空（不是假绿配置问题）。已 `git init` + 首次提交（commit 2f0817d，167 文件入库，.gitignore 正确排除 .env），重跑 scanned=167 / PASS。此坑说明「测试真的扫到了文件」本身也需要断言。
 
 **部署状态**：代码与内容已就绪并入库，尚未部署到 Cloudflare Pages（待配置 `www.dianfengsoft.cn` CNAME 与构建环境变量，属外部操作）。
+
+---
+
+## 2026-11-22 · 科技感视觉改造 + 企业品牌 Logo 集成（本地完成，待用户确认）
+
+**背景**：用户新指令（m00851③）——界面要与个人开发者区分、更体现企业特性、做科技感强的美化、改完先本地预览；随后（m00909）用户终止任务并说明在 `asserts/` 放了一组 dianfeng logo（基本图案一致），可作企业品牌标识。约束：只本地改+预览，**不上传 GitHub、不部署**（均"等确定版本再说"）。用户提供的 GitHub PAT 与上传部署属敏感/延后事项，绝不写入仓库与日志。
+
+**配色系统改写**（`src/styles/global.css`）：从"暖纸底+墨色+赤陶"个人手作风改为冷白/深空蓝科技配色。浅色 `--paper #f5f8fc` / `--ink #0b1a2e` / `--accent #0891b2` / `--accent-2 #4f46e5`；深色 `--paper #070e1a` / `--ink #e8f1fb` / `--accent #22d3ee` / `--accent-2 #818cf8`；新增 `--grid-line`。Hero 细网格+radial mask、`.hero-art` 数据轨道（虚线圈 24s 旋转+中心光球）、status-chip 等宽青蓝描边；按钮/Card/Step/CTA/Header 加渐变与辉光。hero-title 因 axe color-contrast 保持纯色（放弃 background-clip 渐变）。赤陶硬编码 rgba 全部清除。
+
+**Logo 集成**：`asserts/dianfeng1~4.png`（vision_colors 取色：白底+蓝灰 #687090+深蓝 #081850，与科技配色契合）。复制到 `public/images/logo/`（mark/horizontal-2/horizontal-3/banner）+ `public/favicon.png`；`Nav.astro` 手绘 A 字 SVG 换成 `<img class="brand-logo" src="/images/logo/dianfeng-mark.png" ...>`（品牌仍在 nav 外，nav 链接≤5 断言不破）；`BaseLayout.astro:62` favicon 改 PNG；`global.css` `.brand-mark`→`.brand-logo`；`Hero.astro` 头部注释更新。
+
+**验证（全绿）**：build 60 页；astro check 0 error；单测 47/47；CSP drift=false/_headers 618B；E2E 7/7；axe 5 页 0 违规（深浅对比度达标）；Lighthouse 100/100/100/100（LCP 0.2s/CLS 0，failedBinaryAudits:["bf-cache"] 不影响阈值）。浅色/深色首页预览已截图并经 `vision_present` 呈现用户。
+
+**工具坑**：①视觉推理后端本轮全部限流（vision_describe/ocr ok:false VISION_BACKEND_UNAVAILABLE_THIS_TURN，modlens 亦失败），本轮不改问法重试，改用 vision_colors（本地 sharp）+ vision_present 绕过；②预览脚本用 `import { chromium } from '@playwright/test'`（项目无 playwright 包）+ `findChrome()` 指向本机 Chrome（playwright 自带浏览器未下载）。
+
+**用户确认（m01097）**：「深色款的吧」——选定深空蓝科技风为企业门户默认主题。已将 `global.css` `:root` 设为深色变量、`color-scheme: dark`，移除 `prefers-color-scheme: dark` 媒体查询（避免系统浅色偏好把默认主题切回浅色）。重跑全门禁全绿：build 60 页 / check 0 error / 单测 47/47 / CSP drift=false / E2E 7/7 / axe 0 违规 / Lighthouse 100/100/100/100。
+
+**状态**：深色主题已锁定并本地 git 提交。**仍不上传 GitHub、不部署**——用户要求「先定版本再说」（GitHub 仓库 https://github.com/zjc99999/dianfengsoft、阿里云 ECS + caddy 均为待办，PAT 不入仓/不入日志）。

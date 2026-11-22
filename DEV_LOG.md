@@ -18,4 +18,29 @@
 - 质量门禁：`pnpm quality`（build + CSP + check + 硬规则 + 单测 + CI 接线）、`quality:browser`（E2E + Lighthouse + axe + 线索闭环）。
 - 严格 CSP：script-src 仅 'self' + 内联哈希 + 'wasm-unsafe-eval'（Pagefind WASM），无 unsafe-inline；由 `scripts/csp-check.mjs` 从产物生成 `public/_headers`。
 
-**执行**：把旧工程骨架复制到 `D:\Projects\dsh\dianfengsoft`（排除 node_modules/.git/dist/.astro/test-results/.github），共 85 个 src 文件。开始清洗与改造。
+**执行**：把旧工程骨架复制到 `D:\Projects\dsh\dianfengsoft`（排除 node_modules/.git/dist/.astro/test-results），保留 .github，共 85 个 src 文件。开始清洗与改造。
+
+---
+
+## 2026-11-22 · P1 全栏目改造完成 · 质量门禁全绿
+
+**品牌与全局配置**：`constants.ts`（站名/定位/使命、NAV 5 项、CTA 商务咨询+看方案+试用焕名、COLLECTIONS 8 键）、`config.ts`（formEndpoint 空→mailto 降级、calUrl 默认空）、`astro.config.mjs`（默认 URL 改 www.dianfengsoft.cn、集成改名 dianfengsoft-pagefind）、`content.config.ts`（WORKSPACE 改 dianfengsoft；新增 `solutions`/`insights` 集合；cases 加 `kind=scene|client`；pages 加 `responsibility`；profile 企业化字段 mission/company_intro/icp_no）。
+
+**lib 层改造**：`queries.ts` 加 getSolutions/getInsights；`evidence.ts` EVIDENCE_COLLECTIONS 扩到 7 项并加 solutions/insights 路由；`feeds.ts` 合并 insights 到 Feed；`seo.ts` publisher 改 Organization。
+
+**真实内容（不空壳、不虚构）**：profile 企业化；solutions 2 篇（本地文件治理 / 隐私优先 AI 命名）；cases 2 篇均为 `kind=scene` 典型应用场景演示（焕名真实截图，**不指向任何客户**，无授权不发 client 案例）；insights 3 篇；about/responsibility 页企业化；旧 capabilities 9 篇 + log 约26篇 + products 3 篇保留（证据链引用指向原产品 id，未改）。
+
+**页面与组件**：新建 solutions/cases/insights/responsibility/terms/refund 页面；首页重写为 6 步 progression（方案→作品→场景→洞察→能力→责任）；Hero/Nav/Footer/CTA/Seo 均企业化，Footer 加备案号+法务三页；BS 表单企业语气（来源留痕/同意/蜜罐/双兜底）。global.css 补新卡片/事实块样式。
+
+**质量门禁结果（全绿）**：
+- `astro check` 76 文件 0 error（修复 cases reference() 返回 `{collection,id}` 对象的类型问题，改 `productIdOf` 解析）。
+- 单元测试 47/47（含 evidence.test.ts 扩到 7 集合路由断言）。
+- 构建期硬规则 E4-a/b/c 三条探针 + 清理恢复，全部通过。
+- CSP：内联脚本哈希全登记、drift=false、_headers 618B。
+- 部署冒烟：16 核心页 200、首页零脚本、sitemap/RSS/JSON Feed/Pagefind 可消费、CSP 真响应头。
+- E2E 7/7、Lighthouse 100/100/100/100、axe 0 违规、Pagefind 搜索 8 条、首屏 JS 0KB/LCP 1012ms、verify-lead 双表单闭环 PASS。
+- verify-ci 27 项 PASS。
+
+**关键排障**：`verify:ci` 曾因密钥扫描 scanned=0 失败——根因是新目录无 `.git`，`git ls-files` 返回空（不是假绿配置问题）。已 `git init` + 首次提交（commit 2f0817d，167 文件入库，.gitignore 正确排除 .env），重跑 scanned=167 / PASS。此坑说明「测试真的扫到了文件」本身也需要断言。
+
+**部署状态**：代码与内容已就绪并入库，尚未部署到 Cloudflare Pages（待配置 `www.dianfengsoft.cn` CNAME 与构建环境变量，属外部操作）。

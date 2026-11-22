@@ -145,3 +145,19 @@
 **质量门禁（全绿）**：build 81 页、astro check 76 文件 0 error、单测 47/47、硬规则 E4-a/b/c 全过、CSP drift=false（新哈希已登记）、部署冒烟 16 核心页 200、E2E 7/7（PW_PORT=4399）、axe 5 页 0 违规、Lighthouse 100/100/100/100、verify-ci 27 项 scanned=208。产物核验：nav-search=1 / nav-links=6 / products h1=「产品」/ 7 张封面高度均 176px。
 
 **状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 修复搜索页无输入框（预览服务 CSP 哈希缓存）
+
+**现象**：用户反馈点搜索进去「没有找到输入框」。
+
+**根因**：上一轮把搜索页 placeholder 文案从「搜索文章、作品、能力…」改成「搜索产品、方案、日志、能力…」，内联脚本哈希随之从 `sha256-3IdZxm0ziVkC2oS2WWhP4dJuty9V9HnZn4ivHFJ7IZA=` 变为 `sha256-faJDQcZVQ2wV+37EVOhEr3uKnwtYiNO6rcHuV7tTLDU=`，磁盘上的 `dist/_headers` / `public/_headers` 已重生成；但用户浏览器看的 4321 预览服务是改动前启动的——`scripts/cdp-harness.mjs` 的 `startServer()` 在**启动时一次性 `readHeaders()` 到内存**，之后所有响应用缓存的旧 CSP 头，导致内联脚本被 CSP 拦截、PagefindUI 未初始化、`#search` 容器为空（诊断：控制台报 "Executing inline script violates ... script-src"，含正确哈希提示；inputCount=0、pagefindUI=undefined；磁盘哈希新、服务下发哈希旧）。→ 不是站点产物问题，纯预览服务缓存问题。
+
+**修复**：
+1. `scripts/cdp-harness.mjs`：把 `extraHeaders = await readHeaders(headersFile)` 从服务启动阶段移到 `http.createServer` 回调内，改为**每次请求重读** `_headers`；这样开发期改内容（哈希变化）时预览服务无需重启即可跟上，行为也更贴近生产按文件发头。改动仅影响本地预览/探针服务，不改变产物。
+2. 重启 4321 预览服务（kill 旧 job `pwsh-22f59b180b214a7e`，确认无残留 serve 进程后新起 `pwsh-bdbbbfdca2f34973`）。
+
+**验证**：诊断脚本确认 `#search` 已渲染 PagefindUI、`inputCount=1`、`pagefindUI=function`、零控制台错误；输入「焕名」返回 24 条结果、零 pageerror。受影响的门禁全绿：verify-lead / verify-no-dynamic / deploy:smoke（16 页 200、下发新哈希）/ verify-ci 27 项，均 EXIT=0。诊断脚本用后即删。
+
+**状态**：本轮修复已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

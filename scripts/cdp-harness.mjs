@@ -71,11 +71,13 @@ async function readHeaders(headersFile) {
 
 export async function startServer({ root, onPost, port = 0, headersFile } = {}) {
   const state = { root: resolve(root ?? ROOT) };
-  const extraHeaders = await readHeaders(headersFile);
-  /** 每个响应都带上 _headers 里声明的头；具体 Content-Type 覆盖同名项。 */
-  const H = (base) => ({ ...extraHeaders, ...base });
   const server = http.createServer(async (req, res) => {
     try {
+      /** 每个响应都带上 _headers 里声明的头；具体 Content-Type 覆盖同名项。
+       *  每次请求重读文件：开发期改了搜索页文案会改变内联脚本的 CSP 哈希，
+       *  重读让预览服务无需重启即可跟上新哈希（与生产按文件发头的行为一致）。 */
+      const extraHeaders = await readHeaders(headersFile);
+      const H = (base) => ({ ...extraHeaders, ...base });
       if (req.method === 'POST' && onPost) {
         const chunks = [];
         for await (const c of req) chunks.push(c);

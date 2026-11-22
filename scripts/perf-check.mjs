@@ -102,6 +102,8 @@ async function firstScreenBytes() {
     cssRaw: sum(css, 'raw'),
     cssGzip: sum(css, 'gzip'),
     inlineScriptCount: inlineScripts.length,
+    // E7 受控例外：唯一允许的外链脚本必须是 /theme.js
+    themeScriptOk: scriptSrcs.length === 1 && scriptSrcs[0] === '/theme.js',
   };
 }
 
@@ -226,7 +228,8 @@ try {
     ['LCP < 1500ms', result.lcpMs < 1500, `${result.lcpMs}ms`],
     ['CLS < 0.1', result.cls < 0.1, String(result.cls)],
     ['首屏 JS ≤ 50KB (gzip, 含内联)', result.firstScreenJsKB <= 50, `${result.firstScreenJsKB}KB`],
-    ['首页零可执行脚本', result.scriptCount === 0, `${result.scriptCount} 个`],
+    // E7 受控例外：首页仅允许 /theme.js 一个首方外链脚本（深浅色切换），且无内联脚本
+    ['首页仅一个 /theme.js、无内联脚本', result.scriptCount === 1 && result.inlineScriptCount === 0 && bytes.themeScriptOk, `${result.scriptCount} 个（内联 ${result.inlineScriptCount}）`],
   ];
   result.checks = checks.map(([name, ok, actual]) => ({ name, ok, actual }));
   result.verdict = checks.every(([, ok]) => ok) ? 'PASS' : 'FAIL';

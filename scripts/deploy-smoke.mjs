@@ -71,11 +71,15 @@ async function run(base, { expectHeaders }) {
   check('核心页面 200 / 单一 h1 / lang / canonical', pageRows.every((r) => r.ok),
     pageRows.filter((r) => !r.ok).map((r) => `${r.path}(${r.status},h1=${r.h1})`).join(',') || `${pageRows.length} 页全通过`);
 
-  // 2) 首页零可执行脚本（排除 ld+json），且有版式样式外链
+  // 2) 首页可执行脚本受控（E7 受控例外）：仅允许 /theme.js 一个首方外链脚本（深浅色切换），
+  //    ld+json 数据块不计；其余外链或任何内联脚本都判失败
   const home = await get(base, '/');
   const scripts = [...home.text.matchAll(/<script\b([^>]*)>/g)].map((m) => m[1]);
   const exec = scripts.filter((a) => !/application\/ld\+json/.test(a));
-  check('首页零可执行客户端脚本（E7）', exec.length === 0, `exec=${exec.length} ldjson=${scripts.length - exec.length}`);
+  const onlyTheme =
+    exec.length === 1 && /<script\b[^>]*\bsrc=["']\/theme\.js["'][^>]*>\s*<\/script>/.test(home.text) && !exec.some((a) => !/\bsrc=/.test(a));
+  check('首页仅 /theme.js 一个可执行脚本（E7 受控例外）', onlyTheme,
+    `exec=${exec.length} ldjson=${scripts.length - exec.length}`);
 
   // 3) 机器可读产物：RSS / JSON Feed / sitemap / Pagefind UI / robots
   const robots = await get(base, '/robots.txt');

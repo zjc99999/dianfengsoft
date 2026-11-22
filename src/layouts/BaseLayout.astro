@@ -59,6 +59,10 @@ const analyticsDomain = Astro.site?.hostname ?? '';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#070e1a" />
+    <!-- 首方主题脚本：阻塞式早执行，在首屏绘制前写好 data-theme，避免深浅色闪烁（FOUC）。
+         CSP 'self' 放行且外链不产生哈希波动；这是 E7「零脚本」受控例外，全站唯一可执行脚本。 -->
+    <script src="/theme.js" is:inline></script>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />

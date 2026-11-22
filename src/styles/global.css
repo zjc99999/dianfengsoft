@@ -2,9 +2,10 @@
 
 /* ==========================================================================
    巅峰软件 — 企业门户设计系统（科技感）
-   深空蓝 / 冷白 / 青蓝-靛蓝双强调色。原生 CSS 变量（CSS-first），零新增依赖，
-   不引入 @theme（避免 Tailwind 4 生成差异）。所有装饰与动效均为纯 CSS：
-   无客户端 JS、无内联 style 属性、无 on* 事件属性（CSP 门禁）。
+   深空蓝（默认）/ 冷白 / 青蓝-靛蓝双强调色。原生 CSS 变量（CSS-first），零新增依赖，
+   不引入 @theme（避免 Tailwind 4 生成差异）。装饰与动效均为纯 CSS：
+   无内联 style 属性、无 on* 事件属性（CSP 门禁）。
+   深浅色切换由首方脚本 /theme.js 写 html[data-theme] 驱动（E7 受控例外，全站唯一可执行脚本）。
 
    对比度（axe / WCAG 2.1 AA）已按变量逐项核算：
      正文 --ink ≈ 15:1；弱化文字 --muted ≈ 7:1、--subtle ≈ 5:1；
@@ -40,6 +41,37 @@
   --content: 72rem;
   /* 科技网格纹理（极淡，只在 Hero / CTA 用） */
   --grid-line: rgba(34, 211, 238, 0.07);
+}
+
+/* 浅色主题：由 /theme.js 在 <head> 早写入 html[data-theme="light"] 后生效。
+   变量条目与 :root 一一对应，只换颜色不改结构；值沿用项目早期冷白配色
+   （已通过 axe / WCAG AA：正文 ≈ 15:1、弱化 ≈ 7:1、主按钮白字 ≈ 5.2:1）。 */
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --paper: #f5f8fc;
+  --surface: #ffffff;
+  --surface-2: #eef3fa;
+  --ink: #0b1a2e;
+  --muted: #43536b;
+  --subtle: #5b6b82;
+  --line: rgba(11, 26, 46, 0.12);
+  --line-strong: rgba(11, 26, 46, 0.24);
+  --accent: #0891b2;
+  --accent-2: #4f46e5;
+  --accent-ink: #0e7490;
+  --accent-line: rgba(8, 145, 178, 0.42);
+  --accent-glow: rgba(8, 145, 178, 0.14);
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --btn-bg: #0e7490;
+  --btn-bg-hover: #0891b2;
+  --btn-ink: #ffffff;
+  --header-bg: rgba(245, 248, 252, 0.9);
+  --input-border: #94a3b8;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08), 0 6px 18px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.1), 0 18px 40px rgba(15, 23, 42, 0.12);
+  --content: 72rem;
+  --grid-line: rgba(8, 145, 178, 0.09);
 }
 
 html {
@@ -222,6 +254,39 @@ main {
   border-color: var(--accent-line);
   background: var(--accent-soft);
   text-decoration: none;
+}
+/* 深浅色切换：与搜索入口同款胶囊，图标按钮不带文字。置于 <nav> 外，不占主导航预算。 */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.theme-toggle:hover {
+  color: var(--accent-ink);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.theme-toggle svg {
+  flex: none;
+}
+/* 图标显隐（对齐焕名）：显示的是「当前主题」图标——浅色显示太阳、深色显示月亮，点击切换到另一主题 */
+html[data-theme="light"] .theme-toggle .icon-moon,
+html[data-theme="dark"] .theme-toggle .icon-sun,
+html:not([data-theme]) .theme-toggle .icon-sun {
+  display: none;
 }
 .skip-link {
   position: absolute;

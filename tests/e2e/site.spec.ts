@@ -2,7 +2,8 @@
  * M6-d：黑盒 E2E smoke。测的是「构建后的真实静态站点」，不是组件单元。
  *
  * 覆盖 WBS 要求的首屏、导航、CTA 可达，并额外锁住两条本项目不变量：
- *  - 首屏零可执行脚本（E7）：首页不允许出现带 src 或内联的 <script>；
+ *  - 首屏可执行脚本受控（E7）：首页仅允许 /theme.js 一个首方外链脚本（深浅色切换必需），
+ *    不得有内联脚本或其它外链脚本；
  *  - CSP 作为真实响应头发出（M6-e）：且 script-src 是严格策略（无 unsafe-inline）。
  *
  * 这些断言与 Lighthouse / axe / CSP 检查互补：那边看分数与 violations，
@@ -34,10 +35,37 @@ test.describe('首屏（L1 / 3 秒层）', () => {
     expect(await nav.getByRole('link').count()).toBeLessThanOrEqual(6);
   });
 
-  test('首页零可执行脚本（E7）', async ({ page }) => {
+  test('首页仅一个主题脚本、无内联脚本（E7 受控例外）', async ({ page }) => {
     await page.goto('/');
-    const scripts = await page.locator('script:not([type="application/ld+json"])').count();
-    expect(scripts).toBe(0);
+    const scripts = page.locator('script:not([type="application/ld+json"])');
+    expect(await scripts.count()).toBe(1);
+    expect(await scripts.first().getAttribute('src')).toBe('/theme.js');
+    // 外链脚本不应携带内联内容（防偷偷塞代码块绕过预算）
+    expect((await scripts.first().textContent())?.trim() ?? '').toBe('');
+  });
+
+  test('深浅色切换：图标按钮可切换 data-theme 并记忆', async ({ page }) => {
+    await page.goto('/');
+    const root = page.locator('html');
+    const btn = page.getByRole('button', { name: '切换深浅色主题' });
+    await expect(btn).toHaveCount(1);
+    // 默认深色
+    await expect(root).toHaveAttribute('data-theme', 'dark');
+
+    // 切到浅色
+    await btn.click();
+    await expect(root).toHaveAttribute('data-theme', 'light');
+    expect(await page.evaluate(() => window.localStorage.getItem('df-theme'))).toBe('light');
+    // 切回深色
+    await btn.click();
+    await expect(root).toHaveAttribute('data-theme', 'dark');
+    expect(await page.evaluate(() => window.localStorage.getItem('df-theme'))).toBe('dark');
+
+    // 记忆：刷新后仍为深色；再切浅色后刷新仍为浅色
+    await btn.click();
+    await page.reload();
+    await expect(root).toHaveAttribute('data-theme', 'light');
+    await page.evaluate(() => window.localStorage.removeItem('df-theme'));
   });
 
   test('CSP 作为真实响应头发出且 script-src 为严格策略（M6-e）', async ({ page }) => {

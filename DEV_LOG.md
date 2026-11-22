@@ -161,3 +161,21 @@
 **验证**：诊断脚本确认 `#search` 已渲染 PagefindUI、`inputCount=1`、`pagefindUI=function`、零控制台错误；输入「焕名」返回 24 条结果、零 pageerror。受影响的门禁全绿：verify-lead / verify-no-dynamic / deploy:smoke（16 页 200、下发新哈希）/ verify-ci 27 项，均 EXIT=0。诊断脚本用后即删。
 
 **状态**：本轮修复已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 参考焕名实现深浅色切换（月亮/太阳图标）
+
+**需求**：用户 m01933 要求参照焕名站右上角的月亮/太阳切换图标，实现深色/浅色切换。
+
+**实现**（深色为默认，延续此前用户确认的「深色款」）：
+1. `public/theme.js`：首方零依赖脚本，在 `<head>` 阻塞式早执行，读 localStorage(`df-theme`)（隐私模式 try/catch 兜底），仅用户明确选过浅色时用浅色、否则深色，先写 `html[data-theme]` 再绘制避免 FOUC；DOMContentLoaded 后给 `#themeToggle` 绑 click → 取反主题、存 localStorage、同步 `meta[name=theme-color]`（deep #070e1a / light #f5f8fc）。
+2. `src/styles/global.css`：新增 `html[data-theme="light"]` 全套变量覆盖（沿用早期 axe 验证过的冷白配色，正文≈15:1/主按钮白字≈5.2:1）；新增 `.theme-toggle` 胶囊图标按钮样式（复用 .nav-search 观感）+ 图标显隐规则（对齐焕名：显示当前主题图标，深色显月亮、浅色显太阳，无 JS 时默认显月亮）+ 焦点可见环。
+3. `src/layouts/BaseLayout.astro`：`<head>` 加 `<meta name="theme-color">` + `<script src="/theme.js" is:inline>`；外链走 CSP `'self'`、不产生哈希波动，故内联脚本哈希仍为 `sha256-faJDQ...`、`_headers` 无漂移。
+4. `src/components/Nav.astro`：搜索按钮旁加 `<button id="themeToggle" class="theme-toggle" aria-label="切换深浅色主题">`，内嵌太阳/月亮双 SVG，放 `<nav>` 外不占主导航 ≤6 预算。
+
+**E7 门禁同步（受控例外：首页仅允许 /theme.js 一个首方外链脚本，无内联）**：三处零脚本断言改为受控检查——`tests/e2e/site.spec.ts`（改为脚本数=1且 src=/theme.js 且无内联内容；另新增功能测试：默认 dark、点击切 light/localStorage 记忆、刷新保持）、`scripts/deploy-smoke.mjs`（exec=1 且必须是 /theme.js）、`scripts/perf-check.mjs`（scriptCount=1/inlineScriptCount=0/themeScriptOk）。CSP 检查无需改（外链 self 放行）。
+
+**质量门禁（全绿）**：build 81 页、astro check 77 文件 0 error/0 warning/0 hint、单测 47/47、硬规则 E4-a/b/c、CSP drift=false（哈希未变、_headers 618B）、部署冒烟 16 页 200（exec=1 /theme.js）、perf LCP 1000ms/首屏 JS 1.26KB/scriptCount=1/inline=0、E2E 8/8（新增切换测试通过，PW_PORT=4399）、axe 5 页 0 违规、Lighthouse 100×4、verify-ci 27 项 scanned=208、verify-lead 双表单 PASS、verify-no-dynamic 7 个第三方被拦。深色/浅色首页截图经浏览器实测 data-theme dark→light 切换生效并已呈现用户。
+
+**状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

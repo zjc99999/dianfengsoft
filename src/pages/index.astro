@@ -82,7 +82,7 @@ const capItems = await Promise.all(
             <div class="card-grid">
               {solutions.map((s) => (
                 <article class="card">
-                  <h3 class="card-title"><a href={`/solutions/${s.id}`}>{s.data.title}</a></h3>
+                  <h3 class="card-title"><a href={`/solutions/${s.id}`} target="_blank" rel="noopener noreferrer">{s.data.title}</a></h3>
                   <p class="card-summary">{s.data.summary}</p>
                 </article>
               ))}
@@ -123,7 +123,7 @@ const capItems = await Promise.all(
             <div class="card-grid">
               {sceneCases.map((c) => (
                 <article class="card">
-                  <h3 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h3>
+                  <h3 class="card-title"><a href={`/cases/${c.id}`} target="_blank" rel="noopener noreferrer">{c.data.title}</a></h3>
                   <p class="card-summary">{c.data.summary}</p>
                 </article>
               ))}
@@ -140,7 +140,7 @@ const capItems = await Promise.all(
             <ul class="insight-list">
               {insights.map((i) => (
                 <li class="insight-item">
-                  <a href={`/insights/${i.id}`}>{i.data.title}</a>
+                  <a href={`/insights/${i.id}`} target="_blank" rel="noopener noreferrer">{i.data.title}</a>
                   <span class="insight-date">{formatDate(i.data.published_at)}</span>
                 </li>
               ))}
@@ -163,7 +163,7 @@ const capItems = await Promise.all(
           <div class="step-body">
             <p class="section-note">
               隐私优先、免费层长期可用、信息透明——
-              <a href="/responsibility">这是我们的社会责任承诺 →</a>
+              <a href="/responsibility" target="_blank" rel="noopener noreferrer">这是我们的社会责任承诺 →</a>
             </p>
             <CTA />
           </div>

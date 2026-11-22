@@ -41,6 +41,9 @@
   --content: 72rem;
   /* 科技网格纹理（极淡，只在 Hero / CTA 用） */
   --grid-line: rgba(34, 211, 238, 0.07);
+  /* 全站环境光：极淡极光 + 科技网格，铺在 body 底层，随主题切换 */
+  --ambient-1: rgba(34, 211, 238, 0.1);
+  --ambient-2: rgba(129, 140, 248, 0.1);
 }
 
 /* 浅色主题：由 /theme.js 在 <head> 早写入 html[data-theme="light"] 后生效。
@@ -72,6 +75,8 @@ html[data-theme="light"] {
   --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.1), 0 18px 40px rgba(15, 23, 42, 0.12);
   --content: 72rem;
   --grid-line: rgba(8, 145, 178, 0.09);
+  --ambient-1: rgba(8, 145, 178, 0.09);
+  --ambient-2: rgba(79, 70, 229, 0.08);
 }
 
 html {
@@ -83,9 +88,20 @@ html {
   scroll-margin-top: 5.5rem;
 }
 
+/* 全站环境背景：固定不滚动的极光光晕 + 细科技网格，叠在纯色底之上。
+   纯 CSS、pointer-events:none 不影响交互；对比度不受影响（光晕极淡且置于文字下层）。 */
 body {
+  position: relative;
   margin: 0;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(60rem 40rem at 12% -8%, var(--ambient-1), transparent 62%),
+    radial-gradient(52rem 38rem at 92% 2%, var(--ambient-2), transparent 60%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: auto, auto, 3.25rem 3.25rem, 3.25rem 3.25rem;
+  background-position: center top, center top, center top, center top;
+  background-attachment: fixed, fixed, fixed, fixed;
   color: var(--ink);
   font-family:
     system-ui,

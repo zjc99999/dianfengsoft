@@ -30,12 +30,12 @@ const product = productId ? allProducts.find((p) => p.id === productId) : undefi
   seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/cases" class="back-link">← 返回场景案例</a>
+    <a href="/cases" class="back-link" target="_blank" rel="noopener noreferrer">← 返回场景案例</a>
     <p class="eyebrow">{d.kind === 'client' ? '客户案例 · 已获书面授权' : '典型应用场景演示 · 不指向任何客户'}</p>
     <h1 class="page-title">{d.title}</h1>
     <p class="page-lead">{d.summary}</p>
     <p class="detail-meta">
-      {formatDate(d.published_at)}{product && <> · 关联产品：<a href={`/products/${product.id}`}>{product.data.title}</a></>}
+      {formatDate(d.published_at)}{product && <> · 关联产品：<a href={`/products/${product.id}`} target="_blank" rel="noopener noreferrer">{product.data.title}</a></>}
     </p>
 
     <div class="detail-facts">

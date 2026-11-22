@@ -36,7 +36,7 @@ const calUrl = PUBLIC_CONFIG.calUrl;
             rel="noopener noreferrer"
             data-booking-link
             class="btn btn-ghost"
-            >预约 30 分钟通话 ↗</a
+             target="_blank">预约 30 分钟通话 ↗</a
           >
         </section>
       )
@@ -51,7 +51,7 @@ const calUrl = PUBLIC_CONFIG.calUrl;
               <li>
                 <span class="muted">{c.label}：</span>
                 {c.url ? (
-                  <a href={c.url}>{c.value ?? c.url.replace(/^mailto:/, '')} ↗</a>
+                  <a href={c.url} target="_blank" rel="noopener noreferrer">{c.value ?? c.url.replace(/^mailto:/, '')} ↗</a>
                 ) : (
                   // 微信号不是 URL，按纯文本展示，不造死链、不引入复制按钮所需的客户端 JS
                   <code class="chip-code">{c.value}</code>

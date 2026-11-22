@@ -47,7 +47,7 @@ const Heading = headingLevel;
           )}
         </div>
         <Heading class="tl-title">
-          <a href={`/log/${item.id}`}>{item.title}</a>
+          <a href={`/log/${item.id}`} target="_blank" rel="noopener noreferrer">{item.title}</a>
         </Heading>
         <p class="tl-summary">{item.summary}</p>
       </li>
@@ -58,7 +58,7 @@ const Heading = headingLevel;
 {
   !showAll && items.length > 0 && (
     <p class="timeline-more">
-      <a href="/log">查看全部创作日志 →</a>
+      <a href="/log" target="_blank" rel="noopener noreferrer">查看全部创作日志 →</a>
     </p>
   )
 }

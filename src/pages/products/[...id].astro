@@ -29,7 +29,7 @@ const d = product.data;
   seo={{ type: 'product', image: d.cover, publishedAt: d.launch_date, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/products" class="back-link">← 返回产品</a>
+    <a href="/products" class="back-link" target="_blank" rel="noopener noreferrer">← 返回产品</a>
     <div class="title-row">
       <h1 class="page-title">{d.title}</h1>
       <span class="stage-pill">{STAGE_LABEL[d.stage] ?? d.stage}</span>
@@ -49,8 +49,8 @@ const d = product.data;
     }
     <p class="detail-meta">
       {d.launch_date && <>{formatDate(d.launch_date)} 上线 · </>}
-      {d.url && <><a href={d.url} rel="noopener noreferrer">访问站点 ↗</a> · </>}
-      {d.repo_url && <a href={d.repo_url} rel="noopener noreferrer">源码 ↗</a>}
+      {d.url && <><a href={d.url} rel="noopener noreferrer" target="_blank">访问站点 ↗</a> · </>}
+      {d.repo_url && <a href={d.repo_url} rel="noopener noreferrer" target="_blank">源码 ↗</a>}
     </p>
 
     <div class="prose prose-block">

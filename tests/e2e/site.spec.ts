@@ -99,36 +99,60 @@ test.describe('导航与 CTA 可达', () => {
     }
   });
 
-  test('主 CTA 到联系页、次 CTA 到解决方案页', async ({ page }) => {
+  test('站内跳转链接在新标签打开，页内锚点保持本页', async ({ page }) => {
     await page.goto('/');
-    // 首屏与页尾 CTA 区各有一枚同文案链接，点第一枚即可（首屏那枚）。
-    await page.getByRole('link', { name: '商务咨询' }).first().click();
-    await expect.poll(() => pathOf(page.url())).toBe('/contact');
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-
-    await page.goto('/');
-    await page.getByRole('link', { name: '查看解决方案' }).first().click();
-    await expect.poll(() => pathOf(page.url())).toBe('/solutions');
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // 主导航 / 页脚均为新标签；页内锚点（阅读路径）不新开标签。
+    const nav = page.getByRole('navigation', { name: '主导航' });
+    const navTargets = await nav.getByRole('link').evaluateAll(
+      (as) => as.map((a) => (a as HTMLAnchorElement).target),
+    );
+    expect(navTargets.length).toBeGreaterThan(0);
+    expect(navTargets.every((t) => t === '_blank')).toBe(true);
+    const anchors = await page.locator('a[href^="#"]').evaluateAll(
+      (as) => as.map((a) => (a as HTMLAnchorElement).target),
+    );
+    expect(anchors.every((t) => t !== '_blank')).toBe(true);
   });
 
-  test('作品详情与创作日志详情可从列表页抵达', async ({ page }) => {
+  test('主 CTA 到联系页、次 CTA 到解决方案页（新标签）', async ({ page }) => {
+    await page.goto('/');
+    // 首屏与页尾 CTA 区各有一枚同文案链接，点第一枚即可（首屏那枚）。
+    const [contact] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: '商务咨询' }).first().click(),
+    ]);
+    await expect.poll(() => pathOf(contact.url())).toBe('/contact');
+    await expect(contact.getByRole('heading', { level: 1 })).toBeVisible();
+    await contact.close();
+
+    const [solutions] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: '查看解决方案' }).first().click(),
+    ]);
+    await expect.poll(() => pathOf(solutions.url())).toBe('/solutions');
+    await expect(solutions.getByRole('heading', { level: 1 })).toBeVisible();
+    await solutions.close();
+  });
+
+  test('作品详情与创作日志详情可从列表页抵达（新标签）', async ({ page }) => {
     await page.goto('/products/');
     const first = page.locator('main a[href^="/products/"]').first();
     await expect(first).toBeVisible();
     const href = (await first.getAttribute('href'))!;
-    await first.click();
-    await expect.poll(() => pathOf(page.url())).toBe(pathOf(`http://x${href}`));
-    await expect(page.locator('h1').first()).toBeVisible();
+    const [product] = await Promise.all([page.waitForEvent('popup'), first.click()]);
+    await expect.poll(() => pathOf(product.url())).toBe(pathOf(`http://x${href}`));
+    await expect(product.locator('h1').first()).toBeVisible();
+    await product.close();
 
     await page.goto('/log/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const logItem = page.locator('main a[href^="/log/"]').first();
     await expect(logItem).toBeVisible();
     const logHref = (await logItem.getAttribute('href'))!;
-    await logItem.click();
-    await expect.poll(() => pathOf(page.url())).toBe(pathOf(`http://x${logHref}`));
-    await expect(page.locator('h1').first()).toBeVisible();
+    const [log] = await Promise.all([page.waitForEvent('popup'), logItem.click()]);
+    await expect.poll(() => pathOf(log.url())).toBe(pathOf(`http://x${logHref}`));
+    await expect(log.locator('h1').first()).toBeVisible();
+    await log.close();
   });
 
   test('RSS / JSON Feed / sitemap 可被阅读器与搜索引擎消费', async ({ request }) => {

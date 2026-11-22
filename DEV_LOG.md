@@ -179,3 +179,21 @@
 **质量门禁（全绿）**：build 81 页、astro check 77 文件 0 error/0 warning/0 hint、单测 47/47、硬规则 E4-a/b/c、CSP drift=false（哈希未变、_headers 618B）、部署冒烟 16 页 200（exec=1 /theme.js）、perf LCP 1000ms/首屏 JS 1.26KB/scriptCount=1/inline=0、E2E 8/8（新增切换测试通过，PW_PORT=4399）、axe 5 页 0 违规、Lighthouse 100×4、verify-ci 27 项 scanned=208、verify-lead 双表单 PASS、verify-no-dynamic 7 个第三方被拦。深色/浅色首页截图经浏览器实测 data-theme dark→light 切换生效并已呈现用户。
 
 **状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。
+
+---
+
+## 2026-11-22 · 站内链接新标签打开 + 全站环境背景美化
+
+**背景**：用户反馈两点——①站内链接都是本页面打开，希望改为新标签页打开；②加了深浅切换后是否丢了其它美化、页面背景略显单调，希望美化处理。
+
+**核查**：背景并未丢失——科技网格/数据轨道装饰原本只在 `.hero`，加切换时没动；`body` 一直是纯色 `var(--paper)`，所以内页看着单调。站内链接除页脚备案号外确实全是本页跳转。
+
+**实现**：
+1. **新标签打开**：一次性脚本给全部 24 个 `.astro` 里共 66 个跳转 `<a>` 加 `target="_blank" rel="noopener noreferrer"`（已有 rel 的只加 target）；**页内锚点**（`#main`、阅读路径）、`mailto:`/`tel:`、已有 target 的（备案号）保持不变——否则锚点会开空白标签、邮件链接行为怪异。脚本用完即删。
+   - 排障：首版脚本正则漏了闭合 `>`，把 `<a ...>` 写成 `<a ...`（没有 `>`），已用 `git checkout -- '*.astro'` 仅回退 astro 文件（保留 CSS/e2e 改动）后修正脚本重跑；build 通过证明锚点全部合法。
+2. **E2E 适配**：`tests/e2e/site.spec.ts` 三处点击测试改用 `page.waitForEvent('popup')` 接新标签；新增「站内跳转链接在新标签打开、页内锚点保持本页」断言（nav 链接 target 全 `_blank`，`a[href^="#"]` 非 `_blank`）。
+3. **全站环境背景**：`global.css` 新增主题感知变量 `--ambient-1`/`--ambient-2`（深色青蓝/靛蓝、浅色同色系更淡），`body` 改用 `background-image`：两处极光 radial 光晕（顶部左右）+ 细科技网格（3.25rem 间距），`background-attachment: fixed` 固定于视口、置于文字下层；纯 CSS、pointer-events 不受影响、零 JS、不占脚本预算、两套主题随变量自动切换且对比度不受影响（光晕极淡）。
+
+**质量门禁（全绿）**：build 81 页、astro check 78 文件 0 error/0 warning/0 hint、单测 47/47、硬规则 E4-a/b/c、CSP drift=false（_headers 618B、哈希未变）、部署冒烟 16 页 200（exec=1 /theme.js）、E2E 8/8（首轮 1 例 Chrome 启动超时 180s，单独重跑 660ms 通过，属基础设施偶发）、axe 5 页 0 违规、Lighthouse 100×4（LCP 0.3s/CLS 0/TBT 0）、verify-ci 27 项 scanned=209。截图脚本实测：首页深浅两主题 body 均应用极光渐变，首页 43/49、产品页 36/36 站内链接为 `_blank`。
+
+**状态**：本轮改动已本地提交。仍不上传 GitHub、不部署（「先定版本再说」约束持续有效，PAT 不入仓/不入日志）。

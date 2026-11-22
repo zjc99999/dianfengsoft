@@ -26,25 +26,25 @@ const links = socials.slice(0, SOCIAL_LIMIT);
         <ul class="footer-links">
           {links.map((s) => (
             <li>
-              <a href={s.url} rel="me noopener noreferrer">{s.label} ↗</a>
+              <a href={s.url} rel="me noopener noreferrer" target="_blank">{s.label} ↗</a>
             </li>
           ))}
         </ul>
       )
     }
     <p class="footer-links">
-      <a href="/solutions">解决方案</a>
-      <a href="/cases">场景案例</a>
-      <a href="/responsibility">社会责任</a>
-      <a href="/insights">洞察与实践</a>
+      <a href="/solutions" target="_blank" rel="noopener noreferrer">解决方案</a>
+      <a href="/cases" target="_blank" rel="noopener noreferrer">场景案例</a>
+      <a href="/responsibility" target="_blank" rel="noopener noreferrer">社会责任</a>
+      <a href="/insights" target="_blank" rel="noopener noreferrer">洞察与实践</a>
     </p>
     <p class="footer-links">
-      <a href="/contact">联系</a>
-      <a href="/search">搜索</a>
-      <a href="/privacy">隐私政策</a>
-      <a href="/terms">服务条款</a>
-      <a href="/refund">退款说明</a>
-      <a href="/rss.xml">RSS</a>
+      <a href="/contact" target="_blank" rel="noopener noreferrer">联系</a>
+      <a href="/search" target="_blank" rel="noopener noreferrer">搜索</a>
+      <a href="/privacy" target="_blank" rel="noopener noreferrer">隐私政策</a>
+      <a href="/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
+      <a href="/refund" target="_blank" rel="noopener noreferrer">退款说明</a>
+      <a href="/rss.xml" target="_blank" rel="noopener noreferrer">RSS</a>
     </p>
     {
       icpNo && (

@@ -44,7 +44,7 @@ const Heading = headingLevel;
 <article class="card">
   {
     cover && (
-      <a href={`/products/${id}`} class="card-cover" aria-label={`${title} 详情`}>
+      <a href={`/products/${id}`} class="card-cover" aria-label={`${title} 详情`} target="_blank" rel="noopener noreferrer">
         <Image
           src={cover}
           alt={`${title} 的封面图`}
@@ -59,7 +59,7 @@ const Heading = headingLevel;
   <div class="card-body">
     <div class="card-head">
       <Heading class="card-title">
-        <a href={`/products/${id}`}>{title}</a>
+        <a href={`/products/${id}`} target="_blank" rel="noopener noreferrer">{title}</a>
       </Heading>
       <span class="stage-pill">{stageLabel}</span>
     </div>
@@ -77,9 +77,9 @@ const Heading = headingLevel;
     }
 
     <div class="card-links">
-      <a href={`/products/${id}`}>看详情与创作记录</a>
-      {url && <a href={url} rel="noopener noreferrer">访问站点 ↗</a>}
-      {repoUrl && <a href={repoUrl} rel="noopener noreferrer">源码 ↗</a>}
+      <a href={`/products/${id}`} target="_blank" rel="noopener noreferrer">看详情与创作记录</a>
+      {url && <a href={url} rel="noopener noreferrer" target="_blank">访问站点 ↗</a>}
+      {repoUrl && <a href={repoUrl} rel="noopener noreferrer" target="_blank">源码 ↗</a>}
       {launchDate && <span class="date">{formatDate(launchDate)} 上线</span>}
     </div>
   </div>

@@ -25,7 +25,7 @@ const clientCases = cases.filter((c) => c.data.kind === 'client');
       {sceneCases.map((c) => (
         <article class="card">
           <p class="eyebrow">场景演示</p>
-          <h2 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h2>
+          <h2 class="card-title"><a href={`/cases/${c.id}`} target="_blank" rel="noopener noreferrer">{c.data.title}</a></h2>
           <p class="card-summary">{c.data.summary}</p>
           <p class="card-meta">
             {productIdOf(c.data.product_id) && productMap.get(productIdOf(c.data.product_id)) && <>产品：{productMap.get(productIdOf(c.data.product_id))} · </>}
@@ -42,7 +42,7 @@ const clientCases = cases.filter((c) => c.data.kind === 'client');
           {clientCases.map((c) => (
             <article class="card">
               <p class="eyebrow">客户案例 · 已获授权</p>
-              <h2 class="card-title"><a href={`/cases/${c.id}`}>{c.data.title}</a></h2>
+              <h2 class="card-title"><a href={`/cases/${c.id}`} target="_blank" rel="noopener noreferrer">{c.data.title}</a></h2>
               <p class="card-summary">{c.data.summary}</p>
             </article>
           ))}

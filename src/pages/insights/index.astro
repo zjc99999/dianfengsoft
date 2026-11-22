@@ -26,7 +26,7 @@ const KIND_LABEL: Record<string, string> = {
         {insights.map((i) => (
           <li class="insight-item">
             <p class="eyebrow">{KIND_LABEL[i.data.kind] ?? i.data.kind} · {formatDate(i.data.published_at)}</p>
-            <h2 class="card-title"><a href={`/insights/${i.id}`}>{i.data.title}</a></h2>
+            <h2 class="card-title"><a href={`/insights/${i.id}`} target="_blank" rel="noopener noreferrer">{i.data.title}</a></h2>
             <p class="card-summary">{i.data.summary}</p>
           </li>
         ))}

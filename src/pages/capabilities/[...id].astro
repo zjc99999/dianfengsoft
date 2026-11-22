@@ -49,7 +49,7 @@ const evidence = (await resolveEvidenceList(d.evidence_ids)).map((e) => {
   seo={{ type: 'article', publishedAt: d.published_at, modifiedAt: d.updated_at, seo: d.seo }}
 >
   <article class="wrap page">
-    <a href="/capabilities" class="back-link">← 返回能力列表</a>
+    <a href="/capabilities" class="back-link" target="_blank" rel="noopener noreferrer">← 返回能力列表</a>
     <p class="cap-category">{d.category}</p>
     <h1 class="page-title">{d.title}</h1>
     <p class="page-lead">{d.statement}</p>
@@ -71,7 +71,7 @@ const evidence = (await resolveEvidenceList(d.evidence_ids)).map((e) => {
           evidence.map((e) => (
             <li class="evidence-card">
               <span class="evidence-kind">{e.kind}</span>
-              <a href={e.href} class="evidence-card-title">
+              <a href={e.href} class="evidence-card-title" target="_blank" rel="noopener noreferrer">
                 {e.label} →
               </a>
               <code class="evidence-id">{e.rawId}</code>
